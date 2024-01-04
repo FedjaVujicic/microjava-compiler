@@ -1,0 +1,8 @@
+./settings/
+bin/
+logs/
+src/rs/ac/bg/etf/pp1/ast
+src/rs/ac/bg/etf/pp1/util
+src/rs/ac/bg/etf/pp1/sym.java
+src/rs/ac/bg/etf/pp1/Yylex.java
+src/rs/ac/bg/etf/pp1/MJParser.java
