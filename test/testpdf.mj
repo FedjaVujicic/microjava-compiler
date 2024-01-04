@@ -1,0 +1,67 @@
+program p
+
+namespace sizes {
+	const int tableSize = 10;
+	{}
+}
+
+class Table {
+	int pos[], neg[], factor;
+	static int id;
+	static {
+		id = 0;
+	}
+	{
+		void setfactor(int factor) { this.factor = factor; }
+		void putp (int a, int idx) { this.pos[idx] = a; }
+		void putn (int a, int idx) { this.neg[idx] = a; }
+		int getp (int idx) { return pos[idx]; }
+		int getn (int idx) { return neg[idx]; }
+	}
+}
+
+Table val;
+int rows, columns;
+
+{
+	void f(char ch, int a, int arg)
+		int x;
+	{
+		x = arg;
+	}
+
+	void main() int x, i; char c, int[] arr;
+	{
+		val = new Table();
+		val.setfactor(2);
+		arr = new int[3];
+		for (i = 0; i < 3; i++) {
+			arr[i] = i;
+		}
+		for (i = 0; i < 3; i++) print(arr[i]);
+		val.pos = new int [sizes::tableSize];
+		val.neg = new int [sizes::tableSize];
+		read(x);
+
+		for (;i < sizes::tableSize; i++) {
+			val.putp(0, i);
+			val.putn(0, i);
+		}
+
+		f(c, x, i);
+		read(rows);
+		x = rows;
+		for (;;) {
+			if (x <= 0) break;
+			if (0 <= x && x < sizes::tableSize)
+			{
+				val.putp(val.getp(x) + 1);
+			}
+			else if (-sizes::tableSize < x && x < 0)
+			{
+				val.putn(val.getn(-x) + 1);
+			}
+			read(x);
+		}
+	}
+}
