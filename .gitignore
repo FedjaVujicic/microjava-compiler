@@ -2,6 +2,11 @@
 bin/
 logs/
 
+*.class
+*.java~
+
+spec/mjparser_astbuild.cup
+
 src/rs/ac/bg/etf/pp1/ast
 src/rs/ac/bg/etf/pp1/util
 src/rs/ac/bg/etf/pp1/sym.java
