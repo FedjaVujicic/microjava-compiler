@@ -1,0 +1,93 @@
+//Designator (ommitted rules: 4.)
+//asdf::asdf.qwer.asdf.rewq
+
+//Factor (ommitted rules: 3. 7. 8. 9.)
+//asdf::asdf.qwer.asdf.rewq()
+
+//Mulop
+//%
+
+//Term
+//asdf::asdf.qwer.asdf.rewq() % asdf::asdf.qwer.asdf.rewq() * asdf::asdf.qwer.asdf.rewq() / std::int.a.x.y.draw()
+
+//Addop
+//-
+
+//Expr
+//-asdf::asdf.qwer.asdf.rewq() % asdf::asdf.qwer.asdf.rewq() * asdf::asdf.qwer.asdf.rewq() / std::int.a.x.y.draw()
+//+ 6 - a*b*c*q - a%5+d ,
+//a.b() % 4 + 2 / x::y.z()
+
+//Designator 4.
+//asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()]
+
+//Act Pars
+//-asdf::asdf.qwer.asdf.rewq() % asdf::asdf.qwer.asdf.rewq() * asdf::asdf.qwer.asdf.rewq() / std::int.a.x.y.draw()
+//+ 6 - a*b*c*q - a%5+d ,
+//a.b() % 4 + 2 / x::y.z()
+
+//Factor 3.
+//asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()](a.b() % 4 + 2 / x::y.z(), a.b() % 4 + 2 / x::y.z())
+
+//Factor 7.
+//new int [a.b() % 4 + 2 / x::y.z()]
+
+//Factor 8.
+//new int (a.b() % 4 + 2 / x::y.z(), a.b() % 4 + 2 / x::y.z(), a.b() % 4 + 2 / x::y.z())
+
+//Factor 9.
+//(a.b() % 4 + 2 / x::y.z())
+
+//Relop
+//!=
+
+//CondFact
+//a.b() % 4 + 2 / x::y.z() != a.b() % 4 + 2 / x::y.z()
+
+//CondTerm
+//a.b() % 4 + 2 / x::y.z() != a.b() % 4 + 2 / x::y.z() && a > c && b <= 4 && c::d >= a.c
+
+//Condition
+//a.b() % 4 + 2 / x::y.z() != a.b() % 4 + 2 / x::y.z() && a > c && b <= 4 && c::d >= a.c
+//|| a.b() % 4 + 2 / x::y.z() != a.b() % 4 + 2 / x::y.z() && a > c && b <= 4 && c::d >= a.c
+//|| b.c() % ds + 3 / x::y.asdf() != ab() % 3 + 12 / x1_::y.z() && a > c && b <= 4 && c::d >= a.c
+
+
+
+//MethodDeclList, MethodDecl, StatementList, Statement
+//void test_function(int a, char b, bool d[]) 
+//	int x, y, z;
+//	char j, k, l;
+//{
+//		if (a > 5) break;
+//		if (b <= d::c() + 5) return; else break;
+//		break;
+//		continue;
+//		return;
+//		return a.b() % 4 + 2 / x::y.z();
+//		read(asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()]);
+//		print(a.b() % 4 + 2 / x::y.z());
+//		print(a.b() % 4 + 2 / x::y.z(), 127);
+//}
+
+//int test_function2(int a, char b, bool d[]) 
+//	int x, y, z;
+//	char j, k, l;
+//{
+//		if (a > 5) break;
+//		if (b <= d::c() + 5) return; else break;
+//		break;
+//		continue;
+//		return;
+//		return a.b() % 4 + 2 / x::y.z();
+//		read(asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()]);
+//		print(a.b() % 4 + 2 / x::y.z());
+//		print(a.b() % 4 + 2 / x::y.z(), 127);
+//}
+
+//DesignatorStatement
+//asdf::asdf.qwer.asdf.rewq = a * b + C_ - 69;
+//a();
+//asdf::asdf.qwer(6 - a*b*c*q - a%5+d , a.b() % 4 + 2 / x::y.z());
+//a8329POWQF_++;
+//b--;

@@ -10,7 +10,33 @@ namespace Konstante{
 	int asdf[], a, b, c, asd[], a[];
 	int asdf[], a, b, c, asd[], a[];
 	
-	{}
+	{
+		void test_function(int a, char b, bool d[]) 
+			int x, y, z;
+			char j, k, l;
+		{
+			if (a > 5) break;
+			if (b <= d::c() + 5) return; else break;
+			break;
+			continue;
+			return;
+			return a.b() % 4 + 2 / x::y.z();
+			read(asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()]);
+			print(a.b() % 4 + 2 / x::y.z());
+			print(a.b() % 4 + 2 / x::y.z(), 127);
+		}
+	
+		int test_function2(int a, char b, bool d[]) 
+			int x, y, z;
+			char j, k, l;
+		{
+			asdf::asdf.qwer.asdf.rewq = a * b + C_ - 69;
+			a();
+			asdf::asdf.qwer(6 - a*b*c*q - a%5+d , a.b() % 4 + 2 / x::y.z());
+			a8329POWQF_++;
+			b--;
+		}	
+	}
 }
 
 namespace Nizovi{
@@ -36,5 +62,12 @@ namespace Nizovi{
 
 	
 {
-	
+	void test_function(int a, char b, bool d[]) 
+	int x, y, z;
+	char j, k, l;
+	{
+		read(asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()]);
+		print(a.b() % 4 + 2 / x::y.z());
+		print(a.b() % 4 + 2 / x::y.z(), 127);
+	}
 }

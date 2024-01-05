@@ -57,14 +57,16 @@ terminal PROGRAM, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID,
 terminal PLUS, MINUS, MUL, DIV, MOD, EQUAL, NOT_EQUAL, GREATER, GREATER_EQUAL, LESSER, LESSER_EQUAL, AND, OR, ASSIGN, INC, DEC;
 terminal SEMICOLON, COLON, COMMA, DOT, LPAREN, RPAREN, LSQUARE, RSQUARE, LBRACE, RBRACE, WTF, REFERENCE;
 terminal IDENT;
-terminal NUM;
-terminal CHAR;
-terminal BOOL;
+terminal NUM_CONST;
+terminal CHAR_CONST;
+terminal BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDecl, Type, ConstVars, ConstVar, Value, VarDecl, Vars, Var;
-nonterminal MethodDeclList;
+nonterminal MethodDeclList, MethodDecl, RetVal, FormParsOpt, FormParsList, FormPar, VarDeclList;
+nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
-	
+precedence left ELSE;
+
 
 Program ::= PROGRAM IDENT NamespaceList DeclList LBRACE MethodDeclList RBRACE;
 
@@ -96,9 +98,9 @@ ConstVars ::= ConstVar
 		
 ConstVar ::= IDENT ASSIGN Value;
 
-Value ::= NUM
-		| CHAR
-		| BOOL
+Value ::= NUM_CONST
+		| CHAR_CONST
+		| BOOL_CONST
 		;
 		
 VarDecl ::= Type Vars SEMICOLON;
@@ -112,5 +114,116 @@ Var ::= IDENT
 		|
 		IDENT LSQUARE RSQUARE
 		;
+		
+MethodDeclList ::= MethodDeclList MethodDecl
+				|
+				;
+								
+MethodDecl ::= RetVal IDENT LPAREN FormParsOpt RPAREN VarDeclList LBRACE StatementList RBRACE;
 
-MethodDeclList ::= ;
+RetVal ::= Type
+		|
+		VOID
+		;
+
+FormParsOpt ::= FormParsList
+			|
+			;
+			
+FormParsList ::= FormPar
+			|
+			FormParsList COMMA FormPar
+			;
+			
+FormPar ::= Type IDENT
+			|
+			Type IDENT LSQUARE RSQUARE
+			;
+
+VarDeclList ::= VarDeclList VarDecl
+				|
+				;
+
+StatementList ::= StatementList Statement
+				|
+				;
+
+Statement ::= DesignatorStatement SEMICOLON
+			| IF LPAREN Condition RPAREN Statement
+			| IF LPAREN Condition RPAREN Statement ELSE Statement
+			| BREAK SEMICOLON
+			| CONTINUE SEMICOLON
+			| RETURN SEMICOLON
+			| RETURN Expr SEMICOLON
+			| READ LPAREN Designator RPAREN SEMICOLON
+			| PRINT LPAREN Expr RPAREN SEMICOLON
+			| PRINT LPAREN Expr COMMA NUM_CONST RPAREN SEMICOLON
+			| LBRACE StatementList RBRACE
+			;				
+
+Condition ::= CondTerm
+			| Condition OR CondTerm
+			;
+			
+CondTerm ::= CondFact
+			| CondTerm AND CondFact
+			;
+
+CondFact ::= Expr
+			| Expr Relop Expr;
+			
+Expr ::= Term
+		| MINUS Term
+		| Expr Addop Term
+		; 
+
+Term ::= Factor
+		| Term Mulop Factor
+		;
+		
+Factor ::= Designator
+		| Designator LPAREN RPAREN
+		| Designator LPAREN ActPars RPAREN
+		| NUM_CONST
+		| CHAR_CONST
+		| BOOL_CONST
+		| NEW Type LSQUARE Expr RSQUARE
+		| NEW Type LPAREN ActPars RPAREN
+		| LPAREN Expr RPAREN
+		;	
+		
+Mulop ::= MUL
+		| DIV
+		| MOD
+		;
+		
+Designator ::= IDENT
+			| IDENT REFERENCE IDENT
+			| Designator DOT IDENT
+			| Designator LSQUARE Expr RSQUARE
+			;
+
+ActPars ::= Expr
+			| ActPars COMMA Expr
+			;
+
+Addop ::= PLUS
+		| MINUS
+		;
+
+Relop ::= EQUAL
+		| NOT_EQUAL
+		| GREATER
+		| GREATER_EQUAL
+		| LESSER
+		| LESSER_EQUAL
+		;
+		
+DesignatorStatement ::= Designator Assignop Expr
+						| Designator LPAREN RPAREN
+						| Designator LPAREN ActPars RPAREN
+						| Designator INC
+						| Designator DEC
+						;
+
+Assignop ::= ASSIGN;

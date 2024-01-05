@@ -82,10 +82,10 @@ import java_cup.runtime.Symbol;
 "=>" 			{ return new_symbol(sym.WTF, yytext()); }
 
 
-"true" | "false"     			{ return new_symbol(sym.BOOL, Boolean.valueOf(yytext())); }
+"true" | "false"     			{ return new_symbol(sym.BOOL_CONST, Boolean.valueOf(yytext())); }
 [a-zA-Z][a-zA-Z0-9_]*		 	{ return new_symbol(sym.IDENT, yytext()); }
-[0-9]+  						{ return new_symbol(sym.NUM, Integer.valueOf(yytext())); }
-"'"."'" 		     			{ return new_symbol(sym.CHAR, Character.valueOf(yytext().charAt(1))); }
+[0-9]+  						{ return new_symbol(sym.NUM_CONST, Integer.valueOf(yytext())); }
+"'"."'" 		     			{ return new_symbol(sym.CHAR_CONST, Character.valueOf(yytext().charAt(1))); }
 
 "//" 				{ yybegin(COMMENT); }
 <COMMENT> . 		{ yybegin(COMMENT); }
