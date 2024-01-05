@@ -14,7 +14,7 @@
 //import rs.etf.pp1.mj.runtime.Code;
 //import rs.etf.pp1.symboltable.Tab;
 //
-//public class MJParserTest {
+//public class Compiler {
 //
 //	static {
 //		DOMConfigurator.configure(Log4JUtils.instance().findLoggerConfigFile());
@@ -69,3 +69,5 @@
 //		}
 //	}
 //}
+//
+//

@@ -56,11 +56,11 @@ scan with {:
 terminal PROGRAM, BREAK, CLASS, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, EXTENDS, CONTINUE, FOR, STATIC, NAMESPACE;
 terminal PLUS, MINUS, MUL, DIV, MOD, EQUAL, NOT_EQUAL, GREATER, GREATER_EQUAL, LESSER, LESSER_EQUAL, AND, OR, ASSIGN, INC, DEC;
 terminal SEMICOLON, COLON, COMMA, DOT, LPAREN, RPAREN, LSQUARE, RSQUARE, LBRACE, RBRACE, WTF;
+terminal IDENT;
+terminal NUM;
+terminal CHAR;
+terminal BOOL;
 
-terminal String IDENT;
-terminal Integer NUM;
-terminal Character CHAR;
-terminal Boolean BOOL;
 
 nonterminal Program;
 
