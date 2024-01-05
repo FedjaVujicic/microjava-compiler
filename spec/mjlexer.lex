@@ -90,7 +90,7 @@ import java_cup.runtime.Symbol;
 <COMMENT> . 		{ yybegin(COMMENT); }
 <COMMENT> "\r\n" 	{ yybegin(YYINITIAL); }
 
-. { System.err.println("Lexing error '" + yytext() + "' on line " + (yyline + 1)); }
+. { System.err.println("Scanner error '" + yytext() + "' on line " + (yyline + 1) + ", column " + (yycolumn + 1)); }
 
 
 
