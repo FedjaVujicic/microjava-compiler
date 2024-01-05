@@ -1,0 +1,40 @@
+program p
+
+namespace Konstante{
+	int asdf[], a, b, c, asd[], a[];
+	
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	
+	int asdf[], a, b, c, asd[], a[];
+	int asdf[], a, b, c, asd[], a[];
+	
+	{}
+}
+
+namespace Nizovi{
+	int asdf[], a, b, c, asd[], a[];
+	
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	
+	int asdf[], a, b, c, asd[], a[];
+	int asdf[], a, b, c, asd[], a[];
+	
+	{}
+}
+	
+	int asdf[], a, b, c, asd[], a[];
+	
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	const std::int a = 'a', b=5, c   =true, d=21342, e = 123456;
+	
+	int asdf[], a, b, c, asd[], a[];
+
+	
+{
+	
+}

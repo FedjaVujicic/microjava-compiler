@@ -78,6 +78,7 @@ import java_cup.runtime.Symbol;
 "]"				{ return new_symbol(sym.RSQUARE, yytext()); }
 "{" 			{ return new_symbol(sym.LBRACE, yytext()); }
 "}"				{ return new_symbol(sym.RBRACE, yytext()); }
+"::" 			{ return new_symbol(sym.REFERENCE, yytext()); }
 "=>" 			{ return new_symbol(sym.WTF, yytext()); }
 
 
