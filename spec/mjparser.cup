@@ -215,6 +215,8 @@ Factor ::= Designator
 		| 
 		NEW Type LSQUARE Expr RSQUARE
 		| 
+		NEW Type LPAREN RPAREN
+		| 
 		NEW Type LPAREN ActPars RPAREN
 		| 
 		LPAREN Expr RPAREN

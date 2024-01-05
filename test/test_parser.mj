@@ -69,5 +69,6 @@ namespace Nizovi{
 		read(asdf::asdf.qwer.asdf.rewq[a.b() % 4 + 2 / x::y.z()]);
 		print(a.b() % 4 + 2 / x::y.z());
 		print(a.b() % 4 + 2 / x::y.z(), 127);
+		return new a();
 	}
 }
