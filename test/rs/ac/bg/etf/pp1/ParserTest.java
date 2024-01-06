@@ -7,6 +7,8 @@ import java.io.FileReader;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import java_cup.runtime.Symbol;
+import rs.ac.bg.etf.pp1.ast.Program;
 import rs.ac.bg.etf.pp1.util.Log4JUtils;
 
 public class ParserTest {
@@ -34,7 +36,13 @@ public class ParserTest {
 		try (BufferedReader br = new BufferedReader(new FileReader(sourceCode))) {
 			Yylex lexer = new Yylex(br);
 			MJParser p = new MJParser(lexer);
-			p.parse();
+			Symbol s = p.parse();
+			
+			Program prog = (Program)(s.value);
+			log.info(prog.toString(""));
+			log.info("==================================");
+			
+			
 
 			if (!p.errorDetected) {
 				log.info("Parsing successful!");
