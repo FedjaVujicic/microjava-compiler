@@ -20,5 +20,12 @@ QR*)fwofi...QR*)fwofi...
 {
 	void test_function(int a, char b)
 	{
+	// Assignment Error
+		a=.if5;
+		a= asd.else;
+		a = 5;
+		b = 6;
+		c=.;
+		a = asb if;
 	}
 }

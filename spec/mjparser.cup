@@ -65,6 +65,8 @@ nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDec
 nonterminal MethodDeclList, MethodDecl, RetVal, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
+nonterminal AssignExpr;
+
 precedence left ELSE;
 
 
@@ -159,6 +161,9 @@ VarDeclList ::= VarDeclList VarDecl
 				;
 
 StatementList ::= StatementList Statement
+				|
+				error SEMICOLON
+				{: parser.report_error("Recovered from statement error", null); :}
 				|
 				;
 
@@ -272,8 +277,8 @@ Relop ::= EQUAL
 		LESSER_EQUAL
 		;
 		
-DesignatorStatement ::= Designator Assignop Expr
-						| 
+DesignatorStatement ::= Designator Assignop AssignExpr
+						|
 						Designator LPAREN RPAREN
 						| 
 						Designator LPAREN ActPars RPAREN
@@ -284,3 +289,9 @@ DesignatorStatement ::= Designator Assignop Expr
 						;
 
 Assignop ::= ASSIGN;
+
+AssignExpr ::= Expr
+			|
+			error			
+			{: parser.report_error("Recovered from assignment error", null); :}
+			;
