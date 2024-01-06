@@ -6,7 +6,16 @@ namespace Konstante{
 	}
 }
 
-	int a, if;
+// Declaration Error
+QR*)fwofi...QR*)fwofi...
+	const if  QR*)fwofi... { a,if, b, c if;
+	const if  QR*)fwofi... { a,if, b, c if;
+	if abcdefg;
+	int a,if, b, c if;
+	const int a,if, b, c if;
+	int a,if, b, c if;
+	int a,if, b, c if;
+	int a,if, b, c if;
 	
 {
 	void test_function(int a, char b)

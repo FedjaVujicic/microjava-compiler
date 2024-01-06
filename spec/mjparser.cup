@@ -78,6 +78,9 @@ NamespaceDecl ::= NAMESPACE IDENT LBRACE DeclList LBRACE MethodDeclList RBRACE R
 
 DeclList ::= DeclList IdentDecl
 			|
+			error SEMICOLON
+			{: parser.report_error("Recovered from declaration error", null); :}
+			|
 			;
 
 IdentDecl ::= ConstDecl
@@ -97,7 +100,11 @@ ConstVars ::= ConstVar
 			ConstVars COMMA ConstVar
 			;
 		
-ConstVar ::= IDENT ASSIGN Value;
+ConstVar ::= IDENT ASSIGN Value
+			|
+			error
+			{: parser.report_error("Recovered from invalid variable error", null); :}
+			;
 
 Value ::= NUM_CONST
 		| 
@@ -106,7 +113,8 @@ Value ::= NUM_CONST
 		BOOL_CONST
 		;
 		
-VarDecl ::= Type Vars SEMICOLON;
+VarDecl ::= Type Vars SEMICOLON
+		;
 
 Vars ::= Var
 		|
@@ -116,6 +124,9 @@ Vars ::= Var
 Var ::= IDENT
 		|
 		IDENT LSQUARE RSQUARE
+		|
+		error
+		{: parser.report_error("Recovered from invalid variable error", null); :}
 		;
 		
 MethodDeclList ::= MethodDeclList MethodDecl
