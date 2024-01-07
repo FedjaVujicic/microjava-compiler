@@ -24,7 +24,7 @@
 //import rs.etf.pp1.symboltable.concepts.Obj;
 //import rs.etf.pp1.symboltable.concepts.Struct;
 //
-//public class SemanticPass extends VisitorAdaptor {
+//public class SemanticAnalyzer extends VisitorAdaptor {
 //
 //	boolean errorDetected = false;
 //	int printCallCount = 0;
