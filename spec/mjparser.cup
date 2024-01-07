@@ -61,7 +61,7 @@ terminal Integer NUM_CONST;
 terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
-nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDecl, Type, ConstVars, ConstVar, Value, VarDecl, Vars, Var;
+nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDecl, Type, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, RetVal, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
@@ -104,17 +104,17 @@ ConstVars ::= (ConstVarOne) ConstVar
 			(ConstVarMul) ConstVars COMMA ConstVar
 			;
 		
-ConstVar ::= (ConstVar0) IDENT ASSIGN Value
+ConstVar ::= (ConstVar0) IDENT ASSIGN ConstValue
 			|
 			(ErrorConstVar) error
 			{: parser.report_error("Recovered from invalid variable error", null); :}
 			;
 
-Value ::= (ValueNum) NUM_CONST
+ConstValue ::= (ConstValueNum) NUM_CONST
 		| 
-		(ValueChar) CHAR_CONST
+		(ConstValueChar) CHAR_CONST
 		| 
-		(ValueBool) BOOL_CONST
+		(ConstValueBool) BOOL_CONST
 		;
 		
 VarDecl ::= (VarDecl) Type Vars SEMICOLON;
