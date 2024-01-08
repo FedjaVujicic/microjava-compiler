@@ -111,17 +111,17 @@ ConstVars ::= (ConstVarOne) ConstVar
 			(ConstVarMul) ConstVars COMMA ConstVar
 			;
 		
-ConstVar ::= (ConstVar0) IDENT ASSIGN ConstValue
+ConstVar ::= (ConstVar0) IDENT:name ASSIGN ConstValue
 			|
 			(ErrorConstVar) error
 			{: parser.report_error("Recovered from invalid variable error", null); :}
 			;
 
-ConstValue ::= (ConstValueNum) NUM_CONST
+ConstValue ::= (ConstValueNum) NUM_CONST:numVal
 		| 
-		(ConstValueChar) CHAR_CONST
+		(ConstValueChar) CHAR_CONST:charVal
 		| 
-		(ConstValueBool) BOOL_CONST
+		(ConstValueBool) BOOL_CONST:boolVal
 		;
 		
 VarDecl ::= (VarDecl) Type Vars SEMICOLON;

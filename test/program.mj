@@ -1,15 +1,21 @@
 program MJProgram
 
+namespace constants {
+	const char a = 'c';
+	const int b = 'c';
+	const int c = 5;
+	const int x = 1, y = 2, z = 3;
+	{}
+}
+
 namespace ns1 {
  	int a, b;
- {
- }
+ {}
 }
 
 namespace ns2 {
  	int a, b;
- {
- }
+ {}
 }
 
 int x;

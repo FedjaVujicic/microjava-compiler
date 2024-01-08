@@ -13,9 +13,15 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	String curNamespace = "";
 	boolean errorDetected = false;
-
+		
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
+	ArrayList<ConstInfo> curConsts= new ArrayList<ConstInfo>();
 	ArrayList<String> namespaces = new ArrayList<String>();
+	
+
+	int curConstValue;
+	Struct curConstType;
+	
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -113,5 +119,49 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		curVar.isArray = true;
 		curVars.add(curVar);
 	}
+	
+	// ConstDecl
+	public void visit(ConstDecl constDecl) {
+		for (ConstInfo curConst : curConsts) {
+			if (constDecl.getType().struct == Tab.noType) {
+				curConsts.clear();
+				return;				
+			}
+			if (Tab.find(curConst.name) != Tab.noObj) {
+				report_error("Error. Symbol " + curConst.name + " redefinition", constDecl);
+				continue;
+			}
+			if (curConst.type != constDecl.getType().struct) {
+				report_error("Error. Assigned type doesn't match the declared type", constDecl);
+			}
+			Obj constObj = Tab.insert(Obj.Con, curConst.name, curConst.type);
+			constObj.setAdr(curConst.value);
+		}
+		curConsts.clear();
+	}
+	
+	public void visit(ConstVar0 constVar) {
+		String constName = constVar.getName();
+		if (curNamespace != "") {
+			constName = curNamespace + "::" + constName;
+		}
+		
+		ConstInfo curConst = new ConstInfo(constName, curConstValue, curConstType);
+		curConsts.add(curConst);
+	}
+	
+	public void visit(ConstValueNum constValueNum) {
+		curConstValue = constValueNum.getNumVal();
+		curConstType = Tab.intType;
+	}
 
+	public void visit(ConstValueChar constValueChar) {
+		curConstValue = constValueChar.getCharVal();
+		curConstType = Tab.charType;
+	}
+
+	public void visit(ConstValueBool constValueBool) {
+//		curConst.value = constValueBool.getBoolVal();
+//		curConst.type = Tab.boolType;
+	}
 }
