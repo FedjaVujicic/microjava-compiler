@@ -29,6 +29,18 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		log.info(msg.toString());
 	}
 	
+	// Program
+	public void visit(Program program) {
+		Obj progObj = program.getProgName().obj;
+		Tab.chainLocalSymbols(progObj);
+		Tab.closeScope();
+	}
+	
+	public void visit(ProgName progName) {
+		progName.obj = Tab.insert(Obj.Prog, progName.getProgName(), Tab.noType);
+		Tab.openScope();
+	}
+		
 	
 }
 

@@ -67,10 +67,14 @@ nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop
 
 nonterminal AssignExpr;
 
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
+
 precedence left ELSE;
 
 
-Program ::= (Program) PROGRAM IDENT NamespaceList DeclList LBRACE MethodDeclList RBRACE;
+Program ::= (Program) PROGRAM ProgName NamespaceList DeclList LBRACE MethodDeclList RBRACE;
+
+ProgName ::= (ProgName) IDENT:progName;
 
 NamespaceList ::= (Namespaces) NamespaceList NamespaceDecl
 				|
