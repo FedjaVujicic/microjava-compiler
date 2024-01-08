@@ -55,8 +55,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			}
 			if (Tab.find(curVar.name) != Tab.noObj) {
 				report_error("Error. Symbol " + curVar.name + " redefinition", varDecl);
-				curVars.clear();
-				return;
+				continue;
 			}
 			if (curVar.isArray) {
 				Tab.insert(Obj.Var, curVar.name, new Struct(Struct.Array, varDecl.getType().struct));

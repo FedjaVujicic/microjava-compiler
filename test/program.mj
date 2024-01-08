@@ -4,7 +4,7 @@ int x;
 int y[];
 asdf a;
 int z;
-char a, b[], c, d[];
+char x, a, b[], c, d[];
 int a;
 qwer z;
 char y;
