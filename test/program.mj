@@ -1,5 +1,17 @@
 program MJProgram
 
+namespace ns1 {
+ 	int a, b;
+ {
+ }
+}
+
+namespace ns2 {
+ 	int a, b;
+ {
+ }
+}
+
 int x;
 int y[];
 asdf a;
@@ -8,6 +20,7 @@ char x, a, b[], c, d[];
 int a;
 qwer z;
 char y;
+
 
 {
 	

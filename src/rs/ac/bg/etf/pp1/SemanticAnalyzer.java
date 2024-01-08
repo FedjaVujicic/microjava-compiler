@@ -11,9 +11,11 @@ import rs.etf.pp1.symboltable.concepts.Struct;
 
 public class SemanticAnalyzer extends VisitorAdaptor {
 
+	String curNamespace = "";
 	boolean errorDetected = false;
 
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
+	ArrayList<String> namespaces = new ArrayList<String>();
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -83,6 +85,9 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(VarIdent varIdent) {
 		String varName = varIdent.getName();
+		if (curNamespace != "") {
+			varName = curNamespace + "::" + varName;
+		}
 
 		VarInfo curVar = new VarInfo(varName);
 		curVars.add(curVar);
@@ -90,10 +95,23 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(VarIdentArr varIdentArr) {
 		String varName = varIdentArr.getName();
+		if (curNamespace != "") {
+			varName = curNamespace + "::" + varName;
+		}
 
 		VarInfo curVar = new VarInfo(varName);
 		curVar.isArray = true;
 		curVars.add(curVar);
+	}
+	
+	// Namespace
+	public void visit(NamespaceDecl namespace) {
+		namespaces.add(curNamespace);
+		curNamespace = "";
+	}
+
+	public void visit(NamespaceName namespaceName) {
+		curNamespace = namespaceName.getName();
 	}
 
 }

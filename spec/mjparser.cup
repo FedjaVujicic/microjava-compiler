@@ -61,7 +61,7 @@ terminal Integer NUM_CONST;
 terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
-nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
+nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, RetVal, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
@@ -82,7 +82,9 @@ NamespaceList ::= (Namespaces) NamespaceList NamespaceDecl
 				(NamespaceNone) 
 				;
 				
-NamespaceDecl ::= (NamespaceDeclaration) NAMESPACE IDENT LBRACE DeclList LBRACE MethodDeclList RBRACE RBRACE;
+NamespaceDecl ::= (NamespaceDecl) NAMESPACE NamespaceName LBRACE DeclList LBRACE MethodDeclList RBRACE RBRACE;
+
+NamespaceName ::= (NamespaceName) IDENT:name;
 
 DeclList ::= (Declarations) DeclList IdentDecl
 			|
