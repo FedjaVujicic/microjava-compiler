@@ -48,12 +48,22 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Tab.openScope();
 	}
 
+	// Namespace
+	public void visit(NamespaceDecl namespace) {
+		namespaces.add(curNamespace);
+		curNamespace = "";
+	}
+
+	public void visit(NamespaceName namespaceName) {
+		curNamespace = namespaceName.getName();
+	}
+
 	// VarDecl
 	public void visit(VarDecl varDecl) {
 		for (VarInfo curVar : curVars) {
 			if (varDecl.getType().struct == Tab.noType) {
 				curVars.clear();
-				return;				
+				return;
 			}
 			if (Tab.find(curVar.name) != Tab.noObj) {
 				report_error("Error. Symbol " + curVar.name + " redefinition", varDecl);
@@ -102,16 +112,6 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		VarInfo curVar = new VarInfo(varName);
 		curVar.isArray = true;
 		curVars.add(curVar);
-	}
-	
-	// Namespace
-	public void visit(NamespaceDecl namespace) {
-		namespaces.add(curNamespace);
-		curNamespace = "";
-	}
-
-	public void visit(NamespaceName namespaceName) {
-		curNamespace = namespaceName.getName();
 	}
 
 }
