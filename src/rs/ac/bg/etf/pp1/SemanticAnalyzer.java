@@ -71,10 +71,12 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(VarIdent varIdent) {
 		curVars.add(varIdent.getName());
+		report_info("Declared variable " + varIdent.getName(), varIdent);
 	}
 
 	public void visit(VarIdentArr varIdentArr) {
 		curVars.add(varIdentArr.getName());
+		report_info("Declared variable " + varIdentArr.getName(), varIdentArr);
 	}
 
 }
