@@ -62,7 +62,6 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			} else {
 				Tab.insert(Obj.Var, curVar.name, varDecl.getType().struct);
 			}
-			report_info("Declared variable " + curVar.name, varDecl);
 		}
 		curVars.clear();
 	}

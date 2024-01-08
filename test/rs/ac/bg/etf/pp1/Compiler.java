@@ -47,13 +47,14 @@ public class Compiler {
 			} else {
 				log.error("Parsing failed!");
 			}
+			System.out.println("=======================SEMANTIC ANALYSIS=======================");
 	        
 			Tab.init(); // Universe scope
 			SemanticAnalyzer semanticCheck = new SemanticAnalyzer();
 			prog.traverseBottomUp(semanticCheck);
 			
 	        Tab.dump();
-	        log.info("===================================");
+			System.out.println("===============================================================");
 	        log.info("Compiling finished!");
 		}
 	}
