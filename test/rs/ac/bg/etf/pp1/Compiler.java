@@ -42,6 +42,12 @@ public class Compiler {
 	        Symbol s = p.parse();  //pocetak parsiranja
 	        SyntaxNode prog = (SyntaxNode)(s.value);
 	        
+			if (!p.errorDetected) {
+				log.info("Parsing successful!");
+			} else {
+				log.error("Parsing failed!");
+			}
+	        
 			Tab.init(); // Universe scope
 			SemanticAnalyzer semanticCheck = new SemanticAnalyzer();
 			prog.traverseBottomUp(semanticCheck);
