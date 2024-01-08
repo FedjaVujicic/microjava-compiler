@@ -61,13 +61,14 @@ terminal Integer NUM_CONST;
 terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
-nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDecl, Type, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
+nonterminal Program, NamespaceList, NamespaceDecl, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, RetVal, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
 nonterminal AssignExpr;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Type;
 
 precedence left ELSE;
 
@@ -98,9 +99,9 @@ IdentDecl ::= (IdentConst) ConstDecl
 			
 ConstDecl ::= (ConstDecl) CONST Type ConstVars SEMICOLON;
 
-Type ::= (TypeNoRef) IDENT
+Type ::= (TypeNoRef) IDENT:name
 		|
-		(TypeRef) IDENT REFERENCE IDENT
+		(TypeRef) IDENT:namespace REFERENCE IDENT:name
 		;
 		
 ConstVars ::= (ConstVarOne) ConstVar
@@ -128,9 +129,9 @@ Vars ::= (VarOne) Var
 		(VarMul) Vars COMMA Var
 		;
 		
-Var ::= (VarIdent) IDENT
+Var ::= (VarIdent) IDENT:name
 		|
-		(VarIdentArr) IDENT LSQUARE RSQUARE
+		(VarIdentArr) IDENT:name LSQUARE RSQUARE
 		|
 		(ErrorVar) error
 		{: parser.report_error("Recovered from invalid variable error", null); :}

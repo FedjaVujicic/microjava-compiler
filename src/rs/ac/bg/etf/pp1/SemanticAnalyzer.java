@@ -1,5 +1,7 @@
 package rs.ac.bg.etf.pp1;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 
 import rs.ac.bg.etf.pp1.ast.*;
@@ -10,6 +12,8 @@ import rs.etf.pp1.symboltable.concepts.Struct;
 public class SemanticAnalyzer extends VisitorAdaptor {
 
 	boolean errorDetected = false;
+
+	ArrayList<String> curVars = new ArrayList<String>();
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -40,6 +44,37 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(ProgName progName) {
 		progName.obj = Tab.insert(Obj.Prog, progName.getProgName(), Tab.noType);
 		Tab.openScope();
+	}
+
+	// VarDecl
+	public void visit(VarDecl varDecl) {
+		for (String curVar : curVars) {
+			Tab.insert(Obj.Var, curVar, varDecl.getType().struct);
+		}
+		curVars.clear();
+	}
+
+	public void visit(TypeNoRef typeNoRef) {
+		Obj typeNode = Tab.find(typeNoRef.getName());
+		if (typeNode == Tab.noObj) {
+			report_error("Error. Type " + typeNoRef.getName() + " not found", typeNoRef);
+			typeNoRef.struct = Tab.noType;
+			return;
+		}
+		if (typeNode.getKind() != Obj.Type) {
+			report_error("Error. Type " + typeNoRef.getName() + " not found", typeNoRef);
+			typeNoRef.struct = Tab.noType;
+			return;
+		}
+		typeNoRef.struct = typeNode.getType();
+	}
+
+	public void visit(VarIdent varIdent) {
+		curVars.add(varIdent.getName());
+	}
+
+	public void visit(VarIdentArr varIdentArr) {
+		curVars.add(varIdentArr.getName());
 	}
 
 }

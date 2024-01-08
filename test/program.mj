@@ -1,17 +1,13 @@
 program MJProgram
-	int x; int y;
+
+int x;
+int y[];
+asdf a;
+int z;
+char a, b[], c, d[];
+qwer z;
+
 {
 	
-	int k () int c; {
-		c = 1;
-		return c+2;
-	}
 	
-	int main() {
-		y = 2;
-		x = y + 2;
-		y = k() + 3;
-		print(y);
-		return 0;
-	}
 }
