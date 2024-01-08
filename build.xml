@@ -10,6 +10,7 @@
 				<exclude name="SemanticAnalyzer.java"/>
 				<exclude name="CodeGenerator.java"/>
 				<exclude name="CounterVisitor.java"/>
+				<exclude name="VarInfo.java"/>
 			</fileset>
 		</delete>
 		<delete>

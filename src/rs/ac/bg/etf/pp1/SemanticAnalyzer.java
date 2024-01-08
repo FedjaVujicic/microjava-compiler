@@ -13,7 +13,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	boolean errorDetected = false;
 
-	ArrayList<String> curVars = new ArrayList<String>();
+	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -48,8 +48,13 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	// VarDecl
 	public void visit(VarDecl varDecl) {
-		for (String curVar : curVars) {
-			Tab.insert(Obj.Var, curVar, varDecl.getType().struct);
+		for (VarInfo curVar : curVars) {
+			if (curVar.isArray) {
+				Tab.insert(Obj.Var, curVar.name, new Struct(Struct.Array, varDecl.getType().struct));
+			} else {
+				Tab.insert(Obj.Var, curVar.name, varDecl.getType().struct);
+			}
+			report_info("Declared variable " + curVar.name, varDecl);
 		}
 		curVars.clear();
 	}
@@ -70,13 +75,18 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(VarIdent varIdent) {
-		curVars.add(varIdent.getName());
-		report_info("Declared variable " + varIdent.getName(), varIdent);
+		String varName = varIdent.getName();
+
+		VarInfo curVar = new VarInfo(varName);
+		curVars.add(curVar);
 	}
 
 	public void visit(VarIdentArr varIdentArr) {
-		curVars.add(varIdentArr.getName());
-		report_info("Declared variable " + varIdentArr.getName(), varIdentArr);
+		String varName = varIdentArr.getName();
+
+		VarInfo curVar = new VarInfo(varName);
+		curVar.isArray = true;
+		curVars.add(curVar);
 	}
 
 }
