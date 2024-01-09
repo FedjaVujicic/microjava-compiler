@@ -1,0 +1,42 @@
+program MJProgram
+
+namespace constants {
+	const char a = 'c';
+	const int c = 5;
+	const int x = 1, y = 2, z = 3;
+	const bool xT = true, xF = false;
+	{}
+}
+
+namespace ns1 {
+ 	int a, b;
+ {
+ 	int func1(int x) {}
+ }
+}
+namespace ns1 {
+ 	int x;
+ {}
+}
+
+namespace ns2 {
+ 	int a, b;
+ {}
+}
+
+int x;
+int y[];
+int z;
+char a, b[], c, d[];
+
+
+{
+	void main() {
+	}
+	
+ 	int func2(int x, int y, int z) {
+ 	}
+	
+	void func3() {
+	}
+}
