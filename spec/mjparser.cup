@@ -62,7 +62,7 @@ terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
-nonterminal MethodDeclList, MethodDecl, RetVal, FormParsOpt, FormParsList, FormPar, VarDeclList;
+nonterminal MethodDeclList, MethodDecl, RetType, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
 nonterminal AssignExpr;
@@ -144,11 +144,11 @@ MethodDeclList ::= (MethodDeclarations) MethodDeclList MethodDecl
 				(NoMethodDecl) 
 				;
 								
-MethodDecl ::= (MethodDecl) RetVal IDENT LPAREN FormParsOpt RPAREN VarDeclList LBRACE StatementList RBRACE;
+MethodDecl ::= (MethodDecl) RetType IDENT LPAREN FormParsOpt RPAREN VarDeclList LBRACE StatementList RBRACE;
 
-RetVal ::= (RetValType) Type
+RetType ::= (ReturnType) Type
 		|
-		(RetValVoid) VOID
+		(ReturnVoid) VOID
 		;
 
 FormParsOpt ::= (FormParsExist) FormParsList
