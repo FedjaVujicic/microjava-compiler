@@ -405,4 +405,18 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Struct designatorType = factorDesignator.getDesignator().obj.getType();
 		factorDesignator.struct = designatorType;
 	}
+
+	public void visit(TermFactor termFactor) {
+		termFactor.struct = termFactor.getFactor().struct;
+	}
+
+	public void visit(TermMulFactor termMulFactor) {
+		Struct termType = termMulFactor.struct;
+		Struct factorType = termMulFactor.getFactor().struct;
+
+		if (!(termType == Tab.intType && factorType == Tab.intType)) {
+			report_error("Error. Factors must be of type int", termMulFactor);
+			return;
+		}
+	}
 }
