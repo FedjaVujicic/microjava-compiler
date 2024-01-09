@@ -48,7 +48,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Obj progObj = program.getProgName().obj;
 		Tab.chainLocalSymbols(progObj);
 		Tab.closeScope();
-		
+
 		if (!mainExists) {
 			report_error("Error. No main function defined", null);
 		}
@@ -175,17 +175,17 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(MethodDecl methodDecl) {
 		Tab.chainLocalSymbols(methodDecl.getMethodTypeName().obj);
 		Tab.closeScope();
-		
-		if (!curMethod.getName().endsWith("main")){
+
+		if (!curMethod.getName().endsWith("main")) {
 			curMethod = Tab.noObj;
 			return;
-		}		
+		}
 		if (curNamespace != "") {
 			report_error("Error. Main function defined inside a namespace", methodDecl);
 			curMethod = Tab.noObj;
 			return;
 		}
-		
+
 		mainExists = true;
 		if (curMethod.getType() != Tab.noType) {
 			report_error("Error. Main function must have a void type", methodDecl);
