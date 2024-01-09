@@ -46,6 +46,7 @@ public class Compiler {
 				log.info("Parsing successful!");
 			} else {
 				log.error("Parsing failed!");
+				return;
 			}
 			System.out.println("=======================SEMANTIC ANALYSIS=======================");
 	        
