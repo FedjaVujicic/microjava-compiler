@@ -11,19 +11,17 @@ import rs.etf.pp1.symboltable.concepts.Struct;
 
 public class SemanticAnalyzer extends VisitorAdaptor {
 
-	String curNamespace = "";
 	boolean errorDetected = false;
+	String curNamespace = "";
+	int curConstValue;
+	Struct curConstType;
 		
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts= new ArrayList<ConstInfo>();
-	ArrayList<String> namespaces = new ArrayList<String>();
-	
-
-	int curConstValue;
-	Struct curConstType;
-	
+	ArrayList<String> namespaces = new ArrayList<String>();	
 
 	Logger log = Logger.getLogger(getClass());
+		
 
 	public void report_error(String message, SyntaxNode info) {
 		errorDetected = true;
