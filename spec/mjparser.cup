@@ -230,9 +230,9 @@ Term ::= (TermFactor) Factor
 		
 Factor ::= (FactorDesignator) Designator
 		| 
-		(FactorDesignatorParen) Designator LPAREN RPAREN
+		(FactorDesignatorFunc) Designator LPAREN RPAREN
 		| 
-		(FactorDesignatorActPars) Designator LPAREN ActPars RPAREN
+		(FactorDesignatorFuncPars) Designator LPAREN ActPars RPAREN
 		| 
 		(FactorNum) NUM_CONST
 		| 

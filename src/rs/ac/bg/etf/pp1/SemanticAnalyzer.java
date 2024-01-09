@@ -362,4 +362,47 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		designatorIndex.obj = new Obj(Obj.Var, varName, type);
 	}
 
+	public void visit(FactorExpr factorExpr) {
+	}
+
+	public void visit(FactorNewExpr factorNewExpr) {
+		factorNewExpr.struct = factorNewExpr.getType().struct;
+	}
+
+	public void visit(FactorBool factorBool) {
+		factorBool.struct = boolType;
+	}
+
+	public void visit(FactorChar factorChar) {
+		factorChar.struct = Tab.charType;
+	}
+
+	public void visit(FactorNum factorNum) {
+		factorNum.struct = Tab.intType;
+	}
+
+	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
+		int kind = factorDesignatorFuncPars.getDesignator().obj.getKind();
+		String name = factorDesignatorFuncPars.getDesignator().obj.getName();
+		if (kind != Obj.Meth) {
+			report_error("Error. " + name + "is not a function", factorDesignatorFuncPars);
+		}
+		Struct designatorType = factorDesignatorFuncPars.getDesignator().obj.getType();
+		factorDesignatorFuncPars.struct = designatorType;
+	}
+
+	public void visit(FactorDesignatorFunc factorDesignatorFunc) {
+		int kind = factorDesignatorFunc.getDesignator().obj.getKind();
+		String name = factorDesignatorFunc.getDesignator().obj.getName();
+		if (kind != Obj.Meth) {
+			report_error("Error. " + name + "is not a function", factorDesignatorFunc);
+		}
+		Struct designatorType = factorDesignatorFunc.getDesignator().obj.getType();
+		factorDesignatorFunc.struct = designatorType;
+	}
+
+	public void visit(FactorDesignator factorDesignator) {
+		Struct designatorType = factorDesignator.getDesignator().obj.getType();
+		factorDesignator.struct = designatorType;
+	}
 }
