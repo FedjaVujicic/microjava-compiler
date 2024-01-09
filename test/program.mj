@@ -21,6 +21,8 @@ namespace ns1 {
  {
  	int main() {
  	}
+ 	
+ 	int func1() {}
  }
 }
 
@@ -43,8 +45,12 @@ char y;
 	void main() {
 	}
 
+	int main() {}
+	
  	int func2(int x, int y, int z) {
  	}
+ 	
+ 	void func2(int a, int b, int c) {}
 	
 	void func3() {
 	}

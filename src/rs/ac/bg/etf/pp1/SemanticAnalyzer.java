@@ -13,6 +13,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	boolean errorDetected = false;
 	boolean mainExists = false;
+	boolean methodRedefinition = false;
 	String curNamespace = "";
 	int curConstValue;
 	Struct curConstType;
@@ -173,6 +174,11 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	// MethDecl
 	public void visit(MethodDecl methodDecl) {
+		if (methodRedefinition) {
+			methodRedefinition = false;
+			return;
+		}
+
 		Tab.chainLocalSymbols(methodDecl.getMethodTypeName().obj);
 		Tab.closeScope();
 
@@ -201,6 +207,11 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (curNamespace != "") {
 			methName = curNamespace + "::" + methName;
 		}
+		if (Tab.find(methName) != Tab.noObj) {
+			methodRedefinition = true;
+			report_error("Error. Function " + methName + " redefinition", methodTypeName);
+			return;
+		}
 		Struct methType = methodTypeName.getRetType().struct;
 
 		methodTypeName.obj = Tab.insert(Obj.Meth, methName, methType);
@@ -217,6 +228,10 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(FormPar formPar) {
+		if (methodRedefinition) {
+			return;
+		}
+
 		for (VarInfo curVar : curVars) {
 			if (formPar.getType().struct == Tab.noType) {
 				curVars.clear();
