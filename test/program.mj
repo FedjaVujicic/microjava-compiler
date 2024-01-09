@@ -12,8 +12,13 @@ namespace constants {
 namespace ns1 {
  	int a, b;
  {
- 	int func1() {
+ 	int func1(int x) {
  	}
+ }
+}
+namespace ns1 {
+ 	int a, b, x;
+ {
  }
 }
 
@@ -33,7 +38,7 @@ char y;
 
 
 {
- 	int func2() {
+ 	int func2(int x, int y, int z) {
  	}
 	
 	void func3() {

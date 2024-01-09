@@ -163,10 +163,7 @@ FormParsList ::= (FormParsOne) FormPar
 			(FormParsMul) FormParsList COMMA FormPar
 			;
 			
-FormPar ::= (FormParIdent) Type IDENT
-			|
-			(FormParIdentArr) Type IDENT LSQUARE RSQUARE
-			;
+FormPar ::= (FormPar) Type Var;
 
 VarDeclList ::= (VarDeclarations) VarDeclList VarDecl
 				|

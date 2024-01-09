@@ -15,6 +15,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	String curNamespace = "";
 	int curConstValue;
 	Struct curConstType;
+	Obj curMethod;
 
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
@@ -164,29 +165,50 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		curConstValue = value ? 1 : 0;
 		curConstType = boolType;
 	}
-	
+
 	// MethDecl
 	public void visit(MethodDecl methodDecl) {
 		Tab.chainLocalSymbols(methodDecl.getMethodTypeName().obj);
 		Tab.closeScope();
 	}
-	
+
 	public void visit(MethodTypeName methodTypeName) {
 		String methName = methodTypeName.getMethName();
 		if (curNamespace != "") {
 			methName = curNamespace + "::" + methName;
-		}		
+		}
 		Struct methType = methodTypeName.getRetType().struct;
-		
+
 		methodTypeName.obj = Tab.insert(Obj.Meth, methName, methType);
+		curMethod = methodTypeName.obj;
 		Tab.openScope();
 	}
-	
+
 	public void visit(ReturnType returnType) {
 		returnType.struct = returnType.getType().struct;
 	}
 
 	public void visit(ReturnVoid returnVoid) {
 		returnVoid.struct = Tab.noType;
+	}
+
+	public void visit(FormPar formPar) {
+		for (VarInfo curVar : curVars) {
+			if (formPar.getType().struct == Tab.noType) {
+				curVars.clear();
+				return;
+			}
+			if (Tab.currentScope().findSymbol(curVar.name) != null) {
+				report_error("Error. Symbol " + curVar.name + " redefinition", formPar);
+				continue;
+			}
+			if (curVar.isArray) {
+				Tab.insert(Obj.Var, curVar.name, new Struct(Struct.Array, formPar.getType().struct));
+			} else {
+				Tab.insert(Obj.Var, curVar.name, formPar.getType().struct);
+			}
+			curMethod.setLevel(curMethod.getLevel() + 1);
+		}
+		curVars.clear();
 	}
 }
