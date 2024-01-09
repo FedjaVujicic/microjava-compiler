@@ -63,12 +63,12 @@ terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList;
-nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
+nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Relop, Addop, Mulop, ActPars, DesignatorStatement, Assignop;
 
 nonterminal AssignExpr;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName;
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType, Expr, Term, Factor;
 
 precedence left ELSE;
 

@@ -308,7 +308,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		curVars.clear();
 	}
 
-	// Var and Con detection, Designator rules
+	// Var and Con detection, Context rules
 	public void visit(DesignatorIdent designatorIdent) {
 		String name = designatorIdent.getName();
 		Obj obj = Tab.find(name);
@@ -320,6 +320,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Invalid identifier " + name, designatorIdent);
 			return;
 		}
+		designatorIdent.obj = obj;
 		report_info(getSymbolDetectedMsg(obj), designatorIdent);
 	}
 
@@ -337,10 +338,16 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Invalid identifier " + name, designatorIdentRef);
 			return;
 		}
+		designatorIdentRef.obj = obj;
 		report_info(getSymbolDetectedMsg(obj), designatorIdentRef);
 	}
 
 	public void visit(DesignatorIndex designatorIndex) {
-
+		String name = designatorIndex.getDesignator().obj.getName();
+		Struct type = designatorIndex.getDesignator().obj.getType();
+		if (type != arrayIntType && type != arrayCharType && type != arrayBoolType) {
+			report_error("Error. " + name + " is not an array", designatorIndex);
+		}
 	}
+
 }
