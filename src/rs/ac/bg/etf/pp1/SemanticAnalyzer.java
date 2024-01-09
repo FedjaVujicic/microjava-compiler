@@ -415,17 +415,19 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(TermMulFactor termMulFactor) {
-		Struct termType = termMulFactor.struct;
+		Struct termType = termMulFactor.getTerm().struct;
 		Struct factorType = termMulFactor.getFactor().struct;
 
 		if (!(termType == Tab.intType && factorType == Tab.intType)) {
 			report_error("Error. Factors must be of type int", termMulFactor);
 			return;
 		}
+
+		termMulFactor.struct = Tab.intType;
 	}
 
 	public void visit(ExprTerm exprTerm) {
-		exprTerm.struct = exprTerm.struct;
+		exprTerm.struct = exprTerm.getTerm().struct;
 	}
 
 	public void visit(ExprMinusTerm exprMinusTerm) {
@@ -434,15 +436,19 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (termType != Tab.intType) {
 			report_error("Error. Term must be of type int", exprMinusTerm);
 		}
+
+		exprMinusTerm.struct = Tab.intType;
 	}
 
 	public void visit(ExprAddTerm exprAddTerm) {
-		Struct exprType = exprAddTerm.struct;
+		Struct exprType = exprAddTerm.getExpr().struct;
 		Struct termType = exprAddTerm.getTerm().struct;
 
 		if (!(termType == Tab.intType && exprType == Tab.intType)) {
 			report_error("Error. Terms must be of type int", exprAddTerm);
 			return;
 		}
+
+		exprAddTerm.struct = Tab.intType;
 	}
 }
