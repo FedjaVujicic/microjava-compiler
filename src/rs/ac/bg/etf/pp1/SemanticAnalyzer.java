@@ -360,6 +360,11 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			type = boolType;
 		}
 		designatorIndex.obj = new Obj(Obj.Var, varName, type);
+
+		Struct exprType = designatorIndex.getExpr().struct;
+		if (exprType != Tab.intType) {
+			report_error("Error. Array index must be of type int", designatorIndex);
+		}
 	}
 
 	public void visit(FactorExpr factorExpr) {
