@@ -16,6 +16,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	boolean methodRedefinition = false;
 	String curNamespace = "";
 	int curConstValue;
+	int nVars;
 	Struct curConstType;
 	Obj curMethod;
 
@@ -46,6 +47,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	// Program
 	public void visit(Program program) {
+		nVars = Tab.currentScope().getnVars();
 		Obj progObj = program.getProgName().obj;
 		Tab.chainLocalSymbols(progObj);
 		Tab.closeScope();
