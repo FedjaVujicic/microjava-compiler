@@ -423,4 +423,26 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			return;
 		}
 	}
+
+	public void visit(ExprTerm exprTerm) {
+		exprTerm.struct = exprTerm.struct;
+	}
+
+	public void visit(ExprMinusTerm exprMinusTerm) {
+		Struct termType = exprMinusTerm.getTerm().struct;
+
+		if (termType != Tab.intType) {
+			report_error("Error. Term must be of type int", exprMinusTerm);
+		}
+	}
+
+	public void visit(ExprAddTerm exprAddTerm) {
+		Struct exprType = exprAddTerm.struct;
+		Struct termType = exprAddTerm.getTerm().struct;
+
+		if (!(termType == Tab.intType && exprType == Tab.intType)) {
+			report_error("Error. Terms must be of type int", exprAddTerm);
+			return;
+		}
+	}
 }
