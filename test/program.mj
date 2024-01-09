@@ -19,6 +19,8 @@ namespace ns1 {
 namespace ns1 {
  	int a, b, x;
  {
+ 	int main() {
+ 	}
  }
 }
 
@@ -38,6 +40,9 @@ char y;
 
 
 {
+	void main() {
+	}
+
  	int func2(int x, int y, int z) {
  	}
 	
