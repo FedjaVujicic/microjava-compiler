@@ -461,4 +461,13 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 		exprAddTerm.struct = Tab.intType;
 	}
+
+	public void visit(CondFactRelExpr condFactRelExpr) {
+		Struct exprType = condFactRelExpr.getExpr().struct;
+		Struct expr1Type = condFactRelExpr.getExpr1().struct;
+
+		if (exprType != expr1Type) {
+			report_info("Error. Condition types do not match", condFactRelExpr);
+		}
+	}
 }
