@@ -62,13 +62,13 @@ terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
-nonterminal MethodDeclList, MethodDecl, RetType, FormParsOpt, FormParsList, FormPar, VarDeclList;
+nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Expr, Relop, Term, Addop, Factor, Mulop, ActPars, Designator, DesignatorStatement, Assignop;
 
 nonterminal AssignExpr;
 
-nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName;
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Type;
+nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType;
 
 precedence left ELSE;
 
@@ -144,7 +144,9 @@ MethodDeclList ::= (MethodDeclarations) MethodDeclList MethodDecl
 				(NoMethodDecl) 
 				;
 								
-MethodDecl ::= (MethodDecl) RetType IDENT LPAREN FormParsOpt RPAREN VarDeclList LBRACE StatementList RBRACE;
+MethodDecl ::= (MethodDecl) MethodTypeName LPAREN FormParsOpt RPAREN VarDeclList LBRACE StatementList RBRACE;
+
+MethodTypeName ::= (MethodTypeName) RetType:retType IDENT:methName;
 
 RetType ::= (ReturnType) Type
 		|

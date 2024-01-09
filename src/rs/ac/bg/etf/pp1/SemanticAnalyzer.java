@@ -164,4 +164,29 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		curConstValue = value ? 1 : 0;
 		curConstType = boolType;
 	}
+	
+	// MethDecl
+	public void visit(MethodDecl methodDecl) {
+		Tab.chainLocalSymbols(methodDecl.getMethodTypeName().obj);
+		Tab.closeScope();
+	}
+	
+	public void visit(MethodTypeName methodTypeName) {
+		String methName = methodTypeName.getMethName();
+		if (curNamespace != "") {
+			methName = curNamespace + "::" + methName;
+		}		
+		Struct methType = methodTypeName.getRetType().struct;
+		
+		methodTypeName.obj = Tab.insert(Obj.Meth, methName, methType);
+		Tab.openScope();
+	}
+	
+	public void visit(ReturnType returnType) {
+		returnType.struct = returnType.getType().struct;
+	}
+
+	public void visit(ReturnVoid returnVoid) {
+		returnVoid.struct = Tab.noType;
+	}
 }
