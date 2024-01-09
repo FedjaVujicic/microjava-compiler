@@ -45,6 +45,50 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		log.info(msg.toString());
 	}
 
+	public String getSymbolDetectedMsg(Obj obj) {
+		StringBuilder msg = new StringBuilder();
+		msg.append("Detected ");
+		switch (obj.getKind()) {
+		case Obj.Con:
+			msg.append("Con ");
+			break;
+		case Obj.Var:
+			msg.append("Var ");
+			break;
+		case Obj.Meth:
+			msg.append("Meth ");
+			break;
+		default:
+			break;
+		}
+		msg.append(obj.getName()).append(": ");
+		
+		if (obj.getType() == Tab.intType) {
+			msg.append("int, ");
+		}
+		if (obj.getType() == Tab.charType) {
+			msg.append("char, ");			
+		}
+		if (obj.getType() == boolType) {
+			msg.append("bool, ");			
+		}
+//		if (obj.getType() == arrayType) {
+//			msg.append("Arr of ");			
+//			if (obj.getType().getElemType() == new Struct(Struct.Int)) {
+//				msg.append("int, ");
+//			}
+//			if (obj.getType().getElemType() == new Struct(Struct.Char)) {
+//				msg.append("char, ");
+//			}
+//			if (obj.getType().getElemType() == new Struct(Struct.Bool)) {
+//				msg.append("bool, ");
+//			}
+//		}
+		msg.append(obj.getAdr()).append(", ");
+		msg.append(obj.getLevel());
+		return msg.toString();
+	}
+
 	// Program
 	public void visit(Program program) {
 		nVars = Tab.currentScope().getnVars();
@@ -251,5 +295,41 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			curMethod.setLevel(curMethod.getLevel() + 1);
 		}
 		curVars.clear();
+	}
+
+	// Var and Con detection, Designator rules
+	public void visit(DesignatorIdent designatorIdent) {
+		String name = designatorIdent.getName();
+		Obj obj = Tab.find(name);
+		if (obj == Tab.noObj) {
+			report_error("Error. Undefined symbol " + name, designatorIdent);
+			return;
+		}
+		if (obj.getKind() != Obj.Con && obj.getKind() != Obj.Var && obj.getKind() != Obj.Meth) {
+			report_error("Error. Invalid identifier " + name, designatorIdent);
+			return;
+		}
+		report_info(getSymbolDetectedMsg(obj), designatorIdent);
+	}
+
+	public void visit(DesignatorIdentRef designatorIdentRef) {
+		if (!namespaces.contains(designatorIdentRef.getNamespace()))	{
+			report_error("Error. " + designatorIdentRef.getNamespace() + " is not a namespace", designatorIdentRef);
+		}
+		String name = designatorIdentRef.getNamespace() + "::" + designatorIdentRef.getName();
+		Obj obj = Tab.find(name);
+		if (obj == Tab.noObj) {
+			report_error("Error. Undefined symbol " + name, designatorIdentRef);
+			return;
+		}
+		if (obj.getKind() != Obj.Con && obj.getKind() != Obj.Var && obj.getKind() != Obj.Meth) {
+			report_error("Error. Invalid identifier " + name, designatorIdentRef);
+			return;
+		}
+		report_info(getSymbolDetectedMsg(obj), designatorIdentRef);
+	}
+
+	public void visit(DesignatorIndex designatorIndex) {
+
 	}
 }

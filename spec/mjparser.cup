@@ -256,9 +256,9 @@ Mulop ::= (OpMul) MUL
 		(OpMod) MOD
 		;
 		
-Designator ::= (DesignatorIdent) IDENT
+Designator ::= (DesignatorIdent) IDENT:name
 			| 
-			(DesignatorIdentRef) IDENT REFERENCE IDENT
+			(DesignatorIdentRef) IDENT:namespace REFERENCE IDENT:name
 			| 
 			(DesignatorDotIdent) Designator DOT IDENT
 			| 
