@@ -15,13 +15,14 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	String curNamespace = "";
 	int curConstValue;
 	Struct curConstType;
-		
+
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
-	ArrayList<ConstInfo> curConsts= new ArrayList<ConstInfo>();
-	ArrayList<String> namespaces = new ArrayList<String>();	
+	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
+	ArrayList<String> namespaces = new ArrayList<String>();
+
+	static final Struct boolType = Tab.insert(Obj.Type, "bool", new Struct(Struct.Bool)).getType();
 
 	Logger log = Logger.getLogger(getClass());
-		
 
 	public void report_error(String message, SyntaxNode info) {
 		errorDetected = true;
@@ -117,13 +118,13 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		curVar.isArray = true;
 		curVars.add(curVar);
 	}
-	
+
 	// ConstDecl
 	public void visit(ConstDecl constDecl) {
 		for (ConstInfo curConst : curConsts) {
 			if (constDecl.getType().struct == Tab.noType) {
 				curConsts.clear();
-				return;				
+				return;
 			}
 			if (Tab.find(curConst.name) != Tab.noObj) {
 				report_error("Error. Symbol " + curConst.name + " redefinition", constDecl);
@@ -137,17 +138,17 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		}
 		curConsts.clear();
 	}
-	
+
 	public void visit(ConstVar0 constVar) {
 		String constName = constVar.getName();
 		if (curNamespace != "") {
 			constName = curNamespace + "::" + constName;
 		}
-		
+
 		ConstInfo curConst = new ConstInfo(constName, curConstValue, curConstType);
 		curConsts.add(curConst);
 	}
-	
+
 	public void visit(ConstValueNum constValueNum) {
 		curConstValue = constValueNum.getNumVal();
 		curConstType = Tab.intType;
@@ -159,7 +160,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(ConstValueBool constValueBool) {
-//		curConst.value = constValueBool.getBoolVal();
-//		curConst.type = Tab.boolType;
+		boolean value = constValueBool.getBoolVal();
+		curConstValue = value ? 1 : 0;
+		curConstType = boolType;
 	}
 }
