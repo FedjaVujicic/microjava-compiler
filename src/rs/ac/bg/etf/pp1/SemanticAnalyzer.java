@@ -25,6 +25,11 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	ArrayList<String> namespaces = new ArrayList<String>();
 
 	static final Struct boolType = Tab.insert(Obj.Type, "bool", new Struct(Struct.Bool)).getType();
+	static final Struct arrayIntType = Tab.insert(Obj.Type, "arrayInt", new Struct(Struct.Array, Tab.intType))
+			.getType();
+	static final Struct arrayCharType = Tab.insert(Obj.Type, "arrayChar", new Struct(Struct.Array, Tab.charType))
+			.getType();
+	static final Struct arrayBoolType = Tab.insert(Obj.Type, "arrayBool", new Struct(Struct.Array, boolType)).getType();
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -72,6 +77,15 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (obj.getType() == boolType) {
 			msg.append("bool, ");
 		}
+		if (obj.getType() == arrayIntType) {
+			msg.append("Arr of int, ");
+		}
+		if (obj.getType() == arrayCharType) {
+			msg.append("Arr of char, ");
+		}
+		if (obj.getType() == arrayBoolType) {
+			msg.append("Arr of bool, ");
+		}
 		msg.append(obj.getAdr()).append(", ");
 		msg.append(obj.getLevel());
 		return msg.toString();
@@ -115,10 +129,19 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 				report_error("Error. Symbol " + curVar.name + " redefinition", varDecl);
 				continue;
 			}
+			Struct type = varDecl.getType().struct;
 			if (curVar.isArray) {
-				Tab.insert(Obj.Var, curVar.name, new Struct(Struct.Array, varDecl.getType().struct));
+				if (type == Tab.intType) {
+					Tab.insert(Obj.Var, curVar.name, arrayIntType);
+				} else if (type == Tab.charType) {
+					Tab.insert(Obj.Var, curVar.name, arrayCharType);
+				} else if (type == boolType) {
+					Tab.insert(Obj.Var, curVar.name, arrayBoolType);
+				} else {
+					report_error("BIG ERROR. Undefined variable type", varDecl);
+				}
 			} else {
-				Tab.insert(Obj.Var, curVar.name, varDecl.getType().struct);
+				Tab.insert(Obj.Var, curVar.name, type);
 			}
 		}
 		curVars.clear();

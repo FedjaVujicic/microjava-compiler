@@ -1,6 +1,9 @@
 program MJProgram
 
+bool x[];
+
 {
 	void main() {	
+		x = 5;
 	}	
 }
