@@ -343,11 +343,23 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(DesignatorIndex designatorIndex) {
-		String name = designatorIndex.getDesignator().obj.getName();
-		Struct type = designatorIndex.getDesignator().obj.getType();
-		if (type != arrayIntType && type != arrayCharType && type != arrayBoolType) {
-			report_error("Error. " + name + " is not an array", designatorIndex);
+		String varName = designatorIndex.getDesignator().obj.getName();
+		Struct varType = designatorIndex.getDesignator().obj.getType();
+		if (varType != arrayIntType && varType != arrayCharType && varType != arrayBoolType) {
+			report_error("Error. " + varName + " is not an array", designatorIndex);
+			return;
 		}
+		Struct type = Tab.noType;
+		if (varType == arrayIntType) {
+			type = Tab.intType;
+		}
+		if (varType == arrayCharType) {
+			type = Tab.charType;
+		}
+		if (varType == arrayBoolType) {
+			type = boolType;
+		}
+		designatorIndex.obj = new Obj(Obj.Var, varName, type);
 	}
 
 }
