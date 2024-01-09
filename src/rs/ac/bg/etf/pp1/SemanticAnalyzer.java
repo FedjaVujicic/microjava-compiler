@@ -386,6 +386,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		String name = factorDesignatorFuncPars.getDesignator().obj.getName();
 		if (kind != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFuncPars);
+			factorDesignatorFuncPars.struct = Tab.noType;
+			return;
 		}
 		Struct designatorType = factorDesignatorFuncPars.getDesignator().obj.getType();
 		factorDesignatorFuncPars.struct = designatorType;
@@ -396,6 +398,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		String name = factorDesignatorFunc.getDesignator().obj.getName();
 		if (kind != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFunc);
+			factorDesignatorFunc.struct = Tab.noType;
+			return;
 		}
 		Struct designatorType = factorDesignatorFunc.getDesignator().obj.getType();
 		factorDesignatorFunc.struct = designatorType;
