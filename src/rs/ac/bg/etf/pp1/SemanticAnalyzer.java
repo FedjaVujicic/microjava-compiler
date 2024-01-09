@@ -367,6 +367,11 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(FactorNewExpr factorNewExpr) {
 		factorNewExpr.struct = factorNewExpr.getType().struct;
+		Struct exprType = factorNewExpr.getExpr().struct;
+
+		if (exprType != Tab.intType) {
+			report_error("Error. Argument of new must be type int", factorNewExpr);
+		}
 	}
 
 	public void visit(FactorBool factorBool) {
