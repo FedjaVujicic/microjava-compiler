@@ -62,28 +62,16 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			break;
 		}
 		msg.append(obj.getName()).append(": ");
-		
+
 		if (obj.getType() == Tab.intType) {
 			msg.append("int, ");
 		}
 		if (obj.getType() == Tab.charType) {
-			msg.append("char, ");			
+			msg.append("char, ");
 		}
 		if (obj.getType() == boolType) {
-			msg.append("bool, ");			
+			msg.append("bool, ");
 		}
-//		if (obj.getType() == arrayType) {
-//			msg.append("Arr of ");			
-//			if (obj.getType().getElemType() == new Struct(Struct.Int)) {
-//				msg.append("int, ");
-//			}
-//			if (obj.getType().getElemType() == new Struct(Struct.Char)) {
-//				msg.append("char, ");
-//			}
-//			if (obj.getType().getElemType() == new Struct(Struct.Bool)) {
-//				msg.append("bool, ");
-//			}
-//		}
 		msg.append(obj.getAdr()).append(", ");
 		msg.append(obj.getLevel());
 		return msg.toString();
@@ -313,7 +301,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(DesignatorIdentRef designatorIdentRef) {
-		if (!namespaces.contains(designatorIdentRef.getNamespace()))	{
+		if (!namespaces.contains(designatorIdentRef.getNamespace())) {
 			report_error("Error. " + designatorIdentRef.getNamespace() + " is not a namespace", designatorIdentRef);
 		}
 		String name = designatorIdentRef.getNamespace() + "::" + designatorIdentRef.getName();
