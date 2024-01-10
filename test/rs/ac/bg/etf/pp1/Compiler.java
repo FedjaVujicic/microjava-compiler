@@ -42,12 +42,12 @@ public class Compiler {
 	        Symbol s = p.parse();  //pocetak parsiranja
 	        SyntaxNode prog = (SyntaxNode)(s.value);
 	        
-			if (!p.errorDetected) {
-				log.info("Parsing successful!");
-			} else {
+			if (p.errorDetected) {
 				log.error("Parsing failed!");
 				return;
 			}
+			log.info("Parsing successful!");
+			
 			System.out.println("=======================SEMANTIC ANALYSIS=======================");
 	        
 			Tab.init(); // Universe scope
@@ -56,6 +56,13 @@ public class Compiler {
 			
 	        Tab.dump();
 			System.out.println("===============================================================");
+			
+			if (!semanticCheck.passed()) {
+				log.error("Semantic check failed!");
+				return;
+			}
+			log.info("Semantic check passed!");
+			
 	        log.info("Compiling finished!");
 		}
 	}

@@ -50,6 +50,10 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			msg.append(" (line ").append(line).append(")");
 		log.info(msg.toString());
 	}
+	
+	public boolean passed() {
+		return !errorDetected;
+	}
 
 	public String getSymbolDetectedMsg(Obj obj) {
 		StringBuilder msg = new StringBuilder();
