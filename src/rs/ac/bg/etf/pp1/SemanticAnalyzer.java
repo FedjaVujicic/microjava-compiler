@@ -664,6 +664,14 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		}
 	}
 
+	public void visit(StmtPrintExpr stmtPrintExpr) {
+		Struct exprType = stmtPrintExpr.getExpr().struct;
+
+		if (exprType != Tab.intType && exprType != Tab.charType && exprType != boolType) {
+			report_error("Error. Print expression must be of int, char or bool type", stmtPrintExpr);
+		}
+	}
+
 	public void visit(StmtPrintExprNum stmtPrintExprNum) {
 		Struct exprType = stmtPrintExprNum.getExpr().struct;
 
