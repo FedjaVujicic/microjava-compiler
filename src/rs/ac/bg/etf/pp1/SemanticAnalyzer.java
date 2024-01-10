@@ -496,13 +496,57 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		exprAddTerm.struct = Tab.intType;
 	}
 
+	public void visit(CondFactExpr condFactExpr) {
+		condFactExpr.struct = condFactExpr.getExpr().struct;
+	}
+
 	public void visit(CondFactRelExpr condFactRelExpr) {
 		Struct exprType = condFactRelExpr.getExpr().struct;
 		Struct expr1Type = condFactRelExpr.getExpr1().struct;
 
 		if (exprType != expr1Type) {
 			report_info("Error. Condition types do not match", condFactRelExpr);
+			condFactRelExpr.struct = Tab.noType;
+			return;
 		}
+
+		condFactRelExpr.struct = boolType;
+	}
+
+	public void visit(CondTermFact condTermFact) {
+		Struct factType = condTermFact.getCondFact().struct;
+		if (factType != boolType) {
+			condTermFact.struct = Tab.noType;
+			return;
+		}
+		condTermFact.struct = factType;
+	}
+
+	public void visit(CondTermAndFact condTermAndFact) {
+		Struct factType = condTermAndFact.getCondFact().struct;
+		if (factType != boolType) {
+			condTermAndFact.struct = Tab.noType;
+			return;
+		}
+		condTermAndFact.struct = factType;
+	}
+
+	public void visit(ConditionTerm conditionTerm) {
+		Struct termType = conditionTerm.getCondTerm().struct;
+		if (termType != boolType) {
+			conditionTerm.struct = Tab.noType;
+			return;
+		}
+		conditionTerm.struct = termType;
+	}
+
+	public void visit(ConditionOrTerm conditionOrTerm) {
+		Struct termType = conditionOrTerm.getCondTerm().struct;
+		if (termType != boolType) {
+			conditionOrTerm.struct = Tab.noType;
+			return;
+		}
+		conditionOrTerm.struct = termType;
 	}
 
 	public void visit(ActParsOneExpr actParsOneExpr) {
@@ -632,6 +676,24 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 		if (curMethod.getType() != returnType) {
 			report_error("Error. Return type mismatch", stmtReturnExpr);
+			return;
+		}
+	}
+
+	public void visit(StmtIf stmtIf) {
+		Struct cndType = stmtIf.getCondition().struct;
+
+		if (cndType != boolType) {
+			report_error("Error. Condition must be of type bool", stmtIf);
+			return;
+		}
+	}
+
+	public void visit(StmtIfElse stmtIfElse) {
+		Struct cndType = stmtIfElse.getCondition().struct;
+
+		if (cndType != boolType) {
+			report_error("Error. Condition must be of type bool", stmtIfElse);
 			return;
 		}
 	}

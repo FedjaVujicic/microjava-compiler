@@ -3,6 +3,7 @@ program MJProgram
 int x[];
 char y;
 int z;
+bool cnd;
 
 {
 	int func(int a, int b[], char c) {
@@ -18,5 +19,6 @@ int z;
 		z--;
 		read(y);
 		return;
+		if (3 == 5 && true || 2*5 < 12 && !cnd) { return; } else { { print(54); } }
 	}	
 }
