@@ -610,4 +610,29 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Print expression must be of int, char or bool type", stmtPrintExprNum);
 		}
 	}
+
+	public void visit(StmtReturn stmtReturn) {
+		if (curMethod == Tab.noObj || curMethod == null) {
+			report_error("Error. Return statement found outside a function", stmtReturn);
+			return;
+		}
+		if (curMethod.getType() != Tab.noType) {
+			report_error("Error. Function must return a value", stmtReturn);
+			return;
+		}
+	}
+
+	public void visit(StmtReturnExpr stmtReturnExpr) {
+		if (curMethod == Tab.noObj || curMethod == null) {
+			report_error("Error. Return statement found outside a function", stmtReturnExpr);
+			return;
+		}
+		
+		Struct returnType = stmtReturnExpr.getExpr().struct;
+		
+		if (curMethod.getType() != returnType) {
+			report_error("Error. Return type mismatch", stmtReturnExpr);
+			return;
+		}
+	}
 }
