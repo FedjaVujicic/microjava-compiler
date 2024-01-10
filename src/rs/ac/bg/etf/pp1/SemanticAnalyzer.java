@@ -50,7 +50,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			msg.append(" (line ").append(line).append(")");
 		log.info(msg.toString());
 	}
-	
+
 	public boolean passed() {
 		return !errorDetected;
 	}
@@ -387,6 +387,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(FactorExpr factorExpr) {
+		factorExpr.struct = factorExpr.getExpr().struct;
 	}
 
 	public void visit(FactorNewExpr factorNewExpr) {
