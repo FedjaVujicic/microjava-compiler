@@ -627,9 +627,9 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Return statement found outside a function", stmtReturnExpr);
 			return;
 		}
-		
+
 		Struct returnType = stmtReturnExpr.getExpr().struct;
-		
+
 		if (curMethod.getType() != returnType) {
 			report_error("Error. Return type mismatch", stmtReturnExpr);
 			return;
