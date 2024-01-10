@@ -14,7 +14,6 @@ bool cnd;
 		z = -5+6*7-8/9%10;
 		z = new int[-5+6*7-8/9%10];
 		x[5] = 5;
-		if (5 == 4) break;
 		func(3, x, y);
 		z--;
 		read(y);

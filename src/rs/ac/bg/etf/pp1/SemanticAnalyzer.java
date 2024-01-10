@@ -697,4 +697,14 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			return;
 		}
 	}
+
+	public void visit(StmtBreak stmtBreak) {
+		// Works because for loops are not supported
+		report_error("Error. Break statement found outside a for loop", stmtBreak);
+	}
+
+	public void visit(StmtContinue stmtContinue) {
+		// Works because for loops are not supported
+		report_error("Error. Continue statement found outside a for loop", stmtContinue);
+	}
 }
