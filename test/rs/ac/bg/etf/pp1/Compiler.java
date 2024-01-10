@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java_cup.runtime.Symbol;
+import rs.ac.bg.etf.pp1.ast.Program;
 import rs.ac.bg.etf.pp1.ast.SyntaxNode;
 import rs.ac.bg.etf.pp1.util.Log4JUtils;
 import rs.etf.pp1.mj.runtime.Code;
@@ -41,11 +42,13 @@ public class Compiler {
 			MJParser p = new MJParser(lexer);
 			Symbol s = p.parse(); // pocetak parsiranja
 			SyntaxNode prog = (SyntaxNode) (s.value);
+			Program progPrint = (Program) (s.value);
 
 			if (p.errorDetected) {
 				log.error("Parsing failed!");
 				return;
 			}
+			log.info(progPrint.toString(""));
 			log.info("Parsing successful!");
 
 			System.out.println("=======================SEMANTIC ANALYSIS=======================");
