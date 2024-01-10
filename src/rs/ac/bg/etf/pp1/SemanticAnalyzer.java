@@ -374,7 +374,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (varType == arrayBoolType) {
 			type = boolType;
 		}
-		designatorIndex.obj = new Obj(Obj.Var, varName, type);
+		designatorIndex.obj = new Obj(Obj.Elem, varName, type);
 
 		Struct exprType = designatorIndex.getExpr().struct;
 		if (exprType != Tab.intType) {
@@ -544,5 +544,22 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		}
 
 		actParsTypes.clear();
+	}
+
+	public void visit(Assignment assignment) {
+		Obj designatorObj = assignment.getDesignator().obj;
+		Struct exprType = assignment.getAssignExpr().struct;
+		
+		if (designatorObj.getKind() != Obj.Var && designatorObj.getKind() != Obj.Elem) {
+			report_error("Error. Invalid left side operand", assignment);
+			return;
+		}
+		if (designatorObj.getType() != exprType) {
+			report_error("Error. Incompatible assignment types", assignment);
+		}
+	}
+	
+	public void visit(AssignExpr0 assignExpr) {
+		assignExpr.struct = assignExpr.getExpr().struct;
 	}
 }

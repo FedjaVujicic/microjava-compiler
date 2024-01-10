@@ -65,10 +65,8 @@ nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, Iden
 nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList;
 nonterminal StatementList, Statement, Condition, CondTerm, CondFact, Relop, Addop, Mulop, ActPars, DesignatorStatement, Assignop;
 
-nonterminal AssignExpr;
-
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
-nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType, Expr, Term, Factor;
+nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType, AssignExpr, Expr, Term, Factor;
 
 precedence left ELSE;
 
