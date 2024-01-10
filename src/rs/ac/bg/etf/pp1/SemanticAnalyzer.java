@@ -23,6 +23,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
 	ArrayList<String> namespaces = new ArrayList<String>();
+	ArrayList<Struct> actParsTypes = new ArrayList<Struct>();
 
 	static final Struct boolType = Tab.insert(Obj.Type, "bool", new Struct(Struct.Bool)).getType();
 	static final Struct arrayIntType = Tab.insert(Obj.Type, "arrayInt", new Struct(Struct.Array, Tab.intType))
@@ -298,10 +299,19 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 				report_error("Error. Symbol " + curVar.name + " redefinition", formPar);
 				continue;
 			}
+			Struct type = formPar.getType().struct;
 			if (curVar.isArray) {
-				Tab.insert(Obj.Var, curVar.name, new Struct(Struct.Array, formPar.getType().struct));
+				if (type == Tab.intType) {
+					Tab.insert(Obj.Var, curVar.name, arrayIntType);
+				} else if (type == Tab.charType) {
+					Tab.insert(Obj.Var, curVar.name, arrayCharType);
+				} else if (type == boolType) {
+					Tab.insert(Obj.Var, curVar.name, arrayBoolType);
+				} else {
+					report_error("BIG ERROR. Undefined variable type", formPar);
+				}
 			} else {
-				Tab.insert(Obj.Var, curVar.name, formPar.getType().struct);
+				Tab.insert(Obj.Var, curVar.name, type);
 			}
 			curMethod.setLevel(curMethod.getLevel() + 1);
 		}
@@ -314,10 +324,12 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Obj obj = Tab.find(name);
 		if (obj == Tab.noObj) {
 			report_error("Error. Undefined symbol " + name, designatorIdent);
+			designatorIdent.obj = obj;
 			return;
 		}
 		if (obj.getKind() != Obj.Con && obj.getKind() != Obj.Var && obj.getKind() != Obj.Meth) {
 			report_error("Error. Invalid identifier " + name, designatorIdent);
+			designatorIdent.obj = obj;
 			return;
 		}
 		designatorIdent.obj = obj;
@@ -332,10 +344,12 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Obj obj = Tab.find(name);
 		if (obj == Tab.noObj) {
 			report_error("Error. Undefined symbol " + name, designatorIdentRef);
+			designatorIdentRef.obj = obj;
 			return;
 		}
 		if (obj.getKind() != Obj.Con && obj.getKind() != Obj.Var && obj.getKind() != Obj.Meth) {
 			report_error("Error. Invalid identifier " + name, designatorIdentRef);
+			designatorIdentRef.obj = obj;
 			return;
 		}
 		designatorIdentRef.obj = obj;
@@ -347,6 +361,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Struct varType = designatorIndex.getDesignator().obj.getType();
 		if (varType != arrayIntType && varType != arrayCharType && varType != arrayBoolType) {
 			report_error("Error. " + varName + " is not an array", designatorIndex);
+			designatorIndex.obj = Tab.noObj;
 			return;
 		}
 		Struct type = Tab.noType;
@@ -392,13 +407,32 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
-		int kind = factorDesignatorFuncPars.getDesignator().obj.getKind();
+		Obj obj = factorDesignatorFuncPars.getDesignator().obj;
 		String name = factorDesignatorFuncPars.getDesignator().obj.getName();
-		if (kind != Obj.Meth) {
+		if (obj.getKind() != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFuncPars);
 			factorDesignatorFuncPars.struct = Tab.noType;
+			actParsTypes.clear();
 			return;
 		}
+		if (actParsTypes.size() != obj.getLevel()) {
+			report_error("Error. Invalid function argument count", factorDesignatorFuncPars);
+			factorDesignatorFuncPars.struct = Tab.noType;
+			actParsTypes.clear();
+			return;
+		}
+
+		ArrayList<Obj> formPars = new ArrayList<Obj>(obj.getLocalSymbols());
+		for (int i = 0; i < actParsTypes.size(); ++i) {
+			if (actParsTypes.get(i) != formPars.get(i).getType()) {
+				report_error("Error. Type mismatch in function call", factorDesignatorFuncPars);
+				factorDesignatorFuncPars.struct = Tab.noType;
+				actParsTypes.clear();
+				return;
+			}
+		}
+		actParsTypes.clear();
+
 		Struct designatorType = factorDesignatorFuncPars.getDesignator().obj.getType();
 		factorDesignatorFuncPars.struct = designatorType;
 	}
@@ -469,5 +503,46 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (exprType != expr1Type) {
 			report_info("Error. Condition types do not match", condFactRelExpr);
 		}
+	}
+
+	public void visit(ActParsOneExpr actParsOneExpr) {
+		Struct type = actParsOneExpr.getExpr().struct;
+		actParsTypes.add(type);
+	}
+
+	public void visit(ActParsMulExpr actParsMulExpr) {
+		Struct type = actParsMulExpr.getExpr().struct;
+		actParsTypes.add(type);
+	}
+
+	public void visit(FuncCallArg funcCallArg) {
+		String funcName = funcCallArg.getDesignator().obj.getName();
+		Obj funcObj = funcCallArg.getDesignator().obj;
+
+		if (funcObj.getKind() != Obj.Meth) {
+			report_error("Error. " + funcName + "is not a function", funcCallArg);
+			actParsTypes.clear();
+			return;
+		}
+
+		if (actParsTypes.size() != funcObj.getLevel()) {
+			report_error("Error. Invalid function argument count", funcCallArg);
+		}
+
+		ArrayList<Obj> formPars = new ArrayList<Obj>(funcObj.getLocalSymbols());
+
+		for (int i = 0; i < actParsTypes.size(); ++i) {
+			if (actParsTypes.get(i) != formPars.get(i).getType()) {
+				if (actParsTypes.get(i) == arrayIntType) {
+					report_info("ACTUAL GUD", null);
+				}
+				if (formPars.get(i).getType() == arrayIntType) {
+					report_info("FORMAL GUD", null);
+				}
+				report_error("Error. Type mismatch in function call", funcCallArg);
+			}
+		}
+
+		actParsTypes.clear();
 	}
 }
