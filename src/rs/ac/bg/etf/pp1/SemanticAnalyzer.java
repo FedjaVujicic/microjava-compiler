@@ -588,4 +588,26 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			return;
 		}
 	}
+
+	public void visit(StmtRead stmtRead) {
+		Obj designatorObj = stmtRead.getDesignator().obj;
+
+		if (designatorObj.getKind() != Obj.Var && designatorObj.getKind() != Obj.Elem) {
+			report_error("Error. Cannot read " + designatorObj.getName(), stmtRead);
+			return;
+		}
+		if (designatorObj.getType() != Tab.intType && designatorObj.getType() != Tab.charType
+				&& designatorObj.getType() != boolType) {
+			report_error("Error. " + designatorObj.getName() + " must be int, char or bool type", stmtRead);
+			return;
+		}
+	}
+
+	public void visit(StmtPrintExprNum stmtPrintExprNum) {
+		Struct exprType = stmtPrintExprNum.getExpr().struct;
+
+		if (exprType != Tab.intType && exprType != Tab.charType && exprType != boolType) {
+			report_error("Error. Print expression must be of int, char or bool type", stmtPrintExprNum);
+		}
+	}
 }
