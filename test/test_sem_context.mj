@@ -3,15 +3,11 @@ program MJProgram
 int x[];
 char y;
 int z;
-bool cnd;
+bool cnd, cndArr[];
 
 {
 	int func(int a, int b[], char c) {
 		return 1;
-	}
-	
-	char asdf(char c) {
-		return c;
 	}
 	
 	void main() {	
@@ -23,7 +19,8 @@ bool cnd;
 		read(y);
 		return;
 		if (3 == 5 && true || 2*5 < 12 && !cnd) { return; } else { { print(54); } }
+		ord('c');
 		chr(5);
-		asdf(5);
+		z = len(cndArr);	
 	}	
 }

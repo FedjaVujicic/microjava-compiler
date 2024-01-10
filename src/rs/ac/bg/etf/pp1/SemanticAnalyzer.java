@@ -424,7 +424,10 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 		ArrayList<Obj> formPars = new ArrayList<Obj>(obj.getLocalSymbols());
 		for (int i = 0; i < actParsTypes.size(); ++i) {
-			if (actParsTypes.get(i) != formPars.get(i).getType()) {
+			Struct actType = actParsTypes.get(i);
+			Struct formType = formPars.get(i).getType();
+			if (actType != formType && (!(name == "len" && actParsTypes.get(i) == arrayIntType
+					|| actParsTypes.get(i) == arrayCharType || actParsTypes.get(i) == arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", factorDesignatorFuncPars);
 				factorDesignatorFuncPars.struct = Tab.noType;
 				actParsTypes.clear();
@@ -576,7 +579,10 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		ArrayList<Obj> formPars = new ArrayList<Obj>(funcObj.getLocalSymbols());
 
 		for (int i = 0; i < actParsTypes.size(); ++i) {
-			if (actParsTypes.get(i) != formPars.get(i).getType()) {
+			Struct actType = actParsTypes.get(i);
+			Struct formType = formPars.get(i).getType();
+			if (actType != formType && (!(funcName == "len" && actParsTypes.get(i) == arrayIntType
+					|| actParsTypes.get(i) == arrayCharType || actParsTypes.get(i) == arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", funcCallArg);
 			}
 		}
