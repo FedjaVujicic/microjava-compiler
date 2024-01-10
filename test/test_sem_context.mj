@@ -14,5 +14,6 @@ int z;
 		x[5] = 5;
 		if (5 == 4) break;
 		func(3, x, y);
+		z--;
 	}	
 }

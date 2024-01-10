@@ -549,7 +549,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(Assignment assignment) {
 		Obj designatorObj = assignment.getDesignator().obj;
 		Struct exprType = assignment.getAssignExpr().struct;
-		
+
 		if (designatorObj.getKind() != Obj.Var && designatorObj.getKind() != Obj.Elem) {
 			report_error("Error. Invalid left side operand", assignment);
 			return;
@@ -558,8 +558,34 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Incompatible assignment types", assignment);
 		}
 	}
-	
+
 	public void visit(AssignExpr0 assignExpr) {
 		assignExpr.struct = assignExpr.getExpr().struct;
+	}
+
+	public void visit(Increment increment) {
+		Obj designatorObj = increment.getDesignator().obj;
+
+		if (designatorObj.getKind() != Obj.Var && designatorObj.getKind() != Obj.Elem) {
+			report_error("Error. Invalid increment operand " + designatorObj.getName(), increment);
+			return;
+		}
+		if (designatorObj.getType() != Tab.intType) {
+			report_error("Error. " + designatorObj.getName() + " is not a number", increment);
+			return;
+		}
+	}
+
+	public void visit(Decrement decrement) {
+		Obj designatorObj = decrement.getDesignator().obj;
+
+		if (designatorObj.getKind() != Obj.Var && designatorObj.getKind() != Obj.Elem) {
+			report_error("Error. Invalid decrement operand " + designatorObj.getName(), decrement);
+			return;
+		}
+		if (designatorObj.getType() != Tab.intType) {
+			report_error("Error. " + designatorObj.getName() + " is not a number", decrement);
+			return;
+		}
 	}
 }
