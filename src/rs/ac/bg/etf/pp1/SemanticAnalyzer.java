@@ -577,12 +577,6 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 		for (int i = 0; i < actParsTypes.size(); ++i) {
 			if (actParsTypes.get(i) != formPars.get(i).getType()) {
-				if (actParsTypes.get(i) == arrayIntType) {
-					report_info("ACTUAL GUD", null);
-				}
-				if (formPars.get(i).getType() == arrayIntType) {
-					report_info("FORMAL GUD", null);
-				}
 				report_error("Error. Type mismatch in function call", funcCallArg);
 			}
 		}

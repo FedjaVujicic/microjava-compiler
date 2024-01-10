@@ -10,6 +10,10 @@ bool cnd;
 		return 1;
 	}
 	
+	char asdf(char c) {
+		return c;
+	}
+	
 	void main() {	
 		z = -5+6*7-8/9%10;
 		z = new int[-5+6*7-8/9%10];
@@ -19,5 +23,7 @@ bool cnd;
 		read(y);
 		return;
 		if (3 == 5 && true || 2*5 < 12 && !cnd) { return; } else { { print(54); } }
+		chr(5);
+		asdf(5);
 	}	
 }
