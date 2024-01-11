@@ -4,6 +4,7 @@ import rs.ac.bg.etf.pp1.CounterVisitor.FormParCounter;
 import rs.ac.bg.etf.pp1.CounterVisitor.VarCounter;
 import rs.ac.bg.etf.pp1.ast.*;
 import rs.etf.pp1.mj.runtime.*;
+import rs.etf.pp1.symboltable.concepts.*;
 
 public class CodeGenerator extends VisitorAdaptor {
 
@@ -34,4 +35,17 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.put(Code.return_);
 	}
 
+	public void visit(StmtPrintExpr stmtPrintExpr) {
+		Code.loadConst(5);
+		Code.put(Code.print);
+	}
+
+	public void visit(StmtPrintExprNum stmtPrintExprNum) {
+		Code.loadConst(stmtPrintExprNum.getWidth());
+		Code.put(Code.print);
+	}
+
+	public void visit(FactorNum factorNum) {
+		Code.load(new Obj(Obj.Con, "$", factorNum.struct, factorNum.getNumVal(), 0));
+	}
 }

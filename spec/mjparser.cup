@@ -194,7 +194,7 @@ Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			| 
 			(StmtPrintExpr) PRINT LPAREN Expr RPAREN SEMICOLON
 			| 
-			(StmtPrintExprNum) PRINT LPAREN Expr COMMA NUM_CONST RPAREN SEMICOLON
+			(StmtPrintExprNum) PRINT LPAREN Expr COMMA NUM_CONST:width RPAREN SEMICOLON
 			| 
 			(StmtList) LBRACE StatementList RBRACE
 			;				
@@ -232,11 +232,11 @@ Factor ::= (FactorDesignator) Designator
 		| 
 		(FactorDesignatorFuncPars) Designator LPAREN ActPars RPAREN
 		| 
-		(FactorNum) NUM_CONST
+		(FactorNum) NUM_CONST:numVal
 		| 
-		(FactorChar) CHAR_CONST
+		(FactorChar) CHAR_CONST:charVal
 		| 
-		(FactorBool) BOOL_CONST
+		(FactorBool) BOOL_CONST:boolVal
 		| 
 		(FactorNewExpr) NEW Type LSQUARE Expr RSQUARE
 		| 
