@@ -10,9 +10,12 @@ bool cnd, cndArr[];
 		return 1;
 	}
 	
+	int func2() {
+	}
+	
 	void main() {	
 		z = -5+6*7-8/9%10;
-		z = new int[-5+6*7-8/9%10];
+		x = new int[-5+6*7-8/9%10];
 		x[5] = 5;
 		func(3, x, y);
 		z--;
@@ -21,6 +24,7 @@ bool cnd, cndArr[];
 		if (3 == 5 && true || 2*5 < 12 && !cnd) { return; } else { { print(54); } }
 		ord('c');
 		chr(5);
-		z = len(cndArr);	
+		z = len(cndArr);
+		func(z, x, 'c');	
 	}	
 }

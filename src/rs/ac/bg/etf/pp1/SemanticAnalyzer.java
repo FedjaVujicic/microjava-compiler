@@ -397,7 +397,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (exprType != Tab.intType) {
 			report_error("Error. Argument of new must be type int", factorNewExpr);
 		}
-		
+
 		if (arrayType == Tab.intType) {
 			factorNewExpr.struct = arrayIntType;
 		}
@@ -579,18 +579,36 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		actParsTypes.add(type);
 	}
 
+	public void visit(FuncCallNoArg funcCallNoArg) {
+		String funcName = funcCallNoArg.getDesignator().obj.getName();
+		Obj funcObj = funcCallNoArg.getDesignator().obj;
+
+		if (funcObj.getKind() != Obj.Meth) {
+			actParsTypes.clear();
+			return;
+		}
+
+		if (actParsTypes.size() != funcObj.getLevel()) {
+			report_error("Error. Invalid function argument count", funcCallNoArg);
+			actParsTypes.clear();
+			return;
+		}
+		actParsTypes.clear();
+	}
+
 	public void visit(FuncCallArg funcCallArg) {
 		String funcName = funcCallArg.getDesignator().obj.getName();
 		Obj funcObj = funcCallArg.getDesignator().obj;
 
 		if (funcObj.getKind() != Obj.Meth) {
-			report_error("Error. " + funcName + "is not a function", funcCallArg);
 			actParsTypes.clear();
 			return;
 		}
 
 		if (actParsTypes.size() != funcObj.getLevel()) {
 			report_error("Error. Invalid function argument count", funcCallArg);
+			actParsTypes.clear();
+			return;
 		}
 
 		ArrayList<Obj> formPars = new ArrayList<Obj>(funcObj.getLocalSymbols());
