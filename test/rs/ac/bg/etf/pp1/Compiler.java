@@ -24,7 +24,7 @@ public class Compiler {
 
 	public static void main(String[] args) throws Exception {
 		Logger log = Logger.getLogger(Compiler.class);
-		if (args.length < 1) {
+		if (args.length < 2) {
 			log.error("Not enough arguments supplied! Usage: MJParser <source-file> <obj-file> ");
 			return;
 		}
@@ -66,6 +66,17 @@ public class Compiler {
 				return;
 			}
 			log.info("Semantic check passed!");
+
+			File objFile = new File(args[1]);
+			if (objFile.exists()) {
+				objFile.delete();
+			}
+
+			CodeGenerator codeGenerator = new CodeGenerator();
+			prog.traverseBottomUp(codeGenerator);
+			Code.dataSize = semanticCheck.nVars;
+			Code.mainPc = codeGenerator.getMainPc();
+			Code.write(new FileOutputStream(objFile));
 
 			log.info("Compiling finished!");
 		}
