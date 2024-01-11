@@ -10,6 +10,7 @@
 				<exclude name="CodeGenerator.java"/>
 				<exclude name="VarInfo.java"/>
 				<exclude name="ConstInfo.java"/>
+				<exclude name="SymTab.java"/>
 			</fileset>
 		</delete>
 		<delete>

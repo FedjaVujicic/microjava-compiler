@@ -53,11 +53,12 @@ public class Compiler {
 
 			System.out.println("=======================SEMANTIC ANALYSIS=======================");
 
-			Tab.init(); // Universe scope
+			SymTab.init(); // Universe scope
+			SymTab.addTypes();
 			SemanticAnalyzer semanticCheck = new SemanticAnalyzer();
 			prog.traverseBottomUp(semanticCheck);
 
-			Tab.dump();
+			SymTab.dump();
 			System.out.println("===============================================================");
 
 			if (!semanticCheck.passed()) {

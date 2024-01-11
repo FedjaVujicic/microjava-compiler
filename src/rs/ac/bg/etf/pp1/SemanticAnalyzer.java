@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import rs.ac.bg.etf.pp1.ast.*;
-import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.Obj;
 import rs.etf.pp1.symboltable.concepts.Struct;
 
@@ -25,12 +24,6 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	ArrayList<String> namespaces = new ArrayList<String>();
 	ArrayList<Struct> actParsTypes = new ArrayList<Struct>();
 
-	static final Struct boolType = Tab.insert(Obj.Type, "bool", new Struct(Struct.Bool)).getType();
-	static final Struct arrayIntType = Tab.insert(Obj.Type, "arrayInt", new Struct(Struct.Array, Tab.intType))
-			.getType();
-	static final Struct arrayCharType = Tab.insert(Obj.Type, "arrayChar", new Struct(Struct.Array, Tab.charType))
-			.getType();
-	static final Struct arrayBoolType = Tab.insert(Obj.Type, "arrayBool", new Struct(Struct.Array, boolType)).getType();
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -73,22 +66,22 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		}
 		msg.append(obj.getName()).append(": ");
 
-		if (obj.getType() == Tab.intType) {
+		if (obj.getType() == SymTab.intType) {
 			msg.append("int, ");
 		}
-		if (obj.getType() == Tab.charType) {
+		if (obj.getType() == SymTab.charType) {
 			msg.append("char, ");
 		}
-		if (obj.getType() == boolType) {
+		if (obj.getType() == SymTab.boolType) {
 			msg.append("bool, ");
 		}
-		if (obj.getType() == arrayIntType) {
+		if (obj.getType() == SymTab.arrayIntType) {
 			msg.append("Arr of int, ");
 		}
-		if (obj.getType() == arrayCharType) {
+		if (obj.getType() == SymTab.arrayCharType) {
 			msg.append("Arr of char, ");
 		}
-		if (obj.getType() == arrayBoolType) {
+		if (obj.getType() == SymTab.arrayBoolType) {
 			msg.append("Arr of bool, ");
 		}
 		msg.append(obj.getAdr()).append(", ");
@@ -98,10 +91,10 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	// Program
 	public void visit(Program program) {
-		nVars = Tab.currentScope().getnVars();
+		nVars = SymTab.currentScope().getnVars();
 		Obj progObj = program.getProgName().obj;
-		Tab.chainLocalSymbols(progObj);
-		Tab.closeScope();
+		SymTab.chainLocalSymbols(progObj);
+		SymTab.closeScope();
 
 		if (!mainExists) {
 			report_error("Error. No main function defined", null);
@@ -109,8 +102,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(ProgName progName) {
-		progName.obj = Tab.insert(Obj.Prog, progName.getProgName(), Tab.noType);
-		Tab.openScope();
+		progName.obj = SymTab.insert(Obj.Prog, progName.getProgName(), SymTab.noType);
+		SymTab.openScope();
 	}
 
 	// Namespace
@@ -126,42 +119,42 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	// VarDecl
 	public void visit(VarDecl varDecl) {
 		for (VarInfo curVar : curVars) {
-			if (varDecl.getType().struct == Tab.noType) {
+			if (varDecl.getType().struct == SymTab.noType) {
 				curVars.clear();
 				return;
 			}
-			if (Tab.find(curVar.name) != Tab.noObj) {
+			if (SymTab.find(curVar.name) != SymTab.noObj) {
 				report_error("Error. Symbol " + curVar.name + " redefinition", varDecl);
 				continue;
 			}
 			Struct type = varDecl.getType().struct;
 			if (curVar.isArray) {
-				if (type == Tab.intType) {
-					Tab.insert(Obj.Var, curVar.name, arrayIntType);
-				} else if (type == Tab.charType) {
-					Tab.insert(Obj.Var, curVar.name, arrayCharType);
-				} else if (type == boolType) {
-					Tab.insert(Obj.Var, curVar.name, arrayBoolType);
+				if (type == SymTab.intType) {
+					SymTab.insert(Obj.Var, curVar.name, SymTab.arrayIntType);
+				} else if (type == SymTab.charType) {
+					SymTab.insert(Obj.Var, curVar.name, SymTab.arrayCharType);
+				} else if (type == SymTab.boolType) {
+					SymTab.insert(Obj.Var, curVar.name, SymTab.arrayBoolType);
 				} else {
 					report_error("BIG ERROR. Undefined variable type", varDecl);
 				}
 			} else {
-				Tab.insert(Obj.Var, curVar.name, type);
+				SymTab.insert(Obj.Var, curVar.name, type);
 			}
 		}
 		curVars.clear();
 	}
 
 	public void visit(TypeNoRef typeNoRef) {
-		Obj typeNode = Tab.find(typeNoRef.getName());
-		if (typeNode == Tab.noObj) {
+		Obj typeNode = SymTab.find(typeNoRef.getName());
+		if (typeNode == SymTab.noObj) {
 			report_error("Error. Type " + typeNoRef.getName() + " not found", typeNoRef);
-			typeNoRef.struct = Tab.noType;
+			typeNoRef.struct = SymTab.noType;
 			return;
 		}
 		if (typeNode.getKind() != Obj.Type) {
 			report_error("Error. Type " + typeNoRef.getName() + " not found", typeNoRef);
-			typeNoRef.struct = Tab.noType;
+			typeNoRef.struct = SymTab.noType;
 			return;
 		}
 		typeNoRef.struct = typeNode.getType();
@@ -191,18 +184,18 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	// ConstDecl
 	public void visit(ConstDecl constDecl) {
 		for (ConstInfo curConst : curConsts) {
-			if (constDecl.getType().struct == Tab.noType) {
+			if (constDecl.getType().struct == SymTab.noType) {
 				curConsts.clear();
 				return;
 			}
-			if (Tab.find(curConst.name) != Tab.noObj) {
+			if (SymTab.find(curConst.name) != SymTab.noObj) {
 				report_error("Error. Symbol " + curConst.name + " redefinition", constDecl);
 				continue;
 			}
 			if (curConst.type != constDecl.getType().struct) {
 				report_error("Error. Assigned type doesn't match the declared type", constDecl);
 			}
-			Obj constObj = Tab.insert(Obj.Con, curConst.name, curConst.type);
+			Obj constObj = SymTab.insert(Obj.Con, curConst.name, curConst.type);
 			constObj.setAdr(curConst.value);
 		}
 		curConsts.clear();
@@ -220,18 +213,18 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(ConstValueNum constValueNum) {
 		curConstValue = constValueNum.getNumVal();
-		curConstType = Tab.intType;
+		curConstType = SymTab.intType;
 	}
 
 	public void visit(ConstValueChar constValueChar) {
 		curConstValue = constValueChar.getCharVal();
-		curConstType = Tab.charType;
+		curConstType = SymTab.charType;
 	}
 
 	public void visit(ConstValueBool constValueBool) {
 		boolean value = constValueBool.getBoolVal();
 		curConstValue = value ? 1 : 0;
-		curConstType = boolType;
+		curConstType = SymTab.boolType;
 	}
 
 	// MethDecl
@@ -241,27 +234,27 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			return;
 		}
 
-		Tab.chainLocalSymbols(methodDecl.getMethodTypeName().obj);
-		Tab.closeScope();
+		SymTab.chainLocalSymbols(methodDecl.getMethodTypeName().obj);
+		SymTab.closeScope();
 
 		if (!curMethod.getName().endsWith("main")) {
-			curMethod = Tab.noObj;
+			curMethod = SymTab.noObj;
 			return;
 		}
 		if (curNamespace != "") {
 			report_error("Error. Main function defined inside a namespace", methodDecl);
-			curMethod = Tab.noObj;
+			curMethod = SymTab.noObj;
 			return;
 		}
 
 		mainExists = true;
-		if (curMethod.getType() != Tab.noType) {
+		if (curMethod.getType() != SymTab.noType) {
 			report_error("Error. Main function must have a void type", methodDecl);
 		}
 		if (curMethod.getLevel() > 0) {
 			report_error("Error. Main function can't contain parameters", methodDecl);
 		}
-		curMethod = Tab.noObj;
+		curMethod = SymTab.noObj;
 	}
 
 	public void visit(MethodTypeName methodTypeName) {
@@ -269,16 +262,16 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		if (curNamespace != "") {
 			methName = curNamespace + "::" + methName;
 		}
-		if (Tab.find(methName) != Tab.noObj) {
+		if (SymTab.find(methName) != SymTab.noObj) {
 			methodRedefinition = true;
 			report_error("Error. Function " + methName + " redefinition", methodTypeName);
 			return;
 		}
 		Struct methType = methodTypeName.getRetType().struct;
 
-		methodTypeName.obj = Tab.insert(Obj.Meth, methName, methType);
+		methodTypeName.obj = SymTab.insert(Obj.Meth, methName, methType);
 		curMethod = methodTypeName.obj;
-		Tab.openScope();
+		SymTab.openScope();
 	}
 
 	public void visit(ReturnType returnType) {
@@ -286,7 +279,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(ReturnVoid returnVoid) {
-		returnVoid.struct = Tab.noType;
+		returnVoid.struct = SymTab.noType;
 	}
 
 	public void visit(FormPar formPar) {
@@ -295,27 +288,27 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		}
 
 		for (VarInfo curVar : curVars) {
-			if (formPar.getType().struct == Tab.noType) {
+			if (formPar.getType().struct == SymTab.noType) {
 				curVars.clear();
 				return;
 			}
-			if (Tab.currentScope().findSymbol(curVar.name) != null) {
+			if (SymTab.currentScope().findSymbol(curVar.name) != null) {
 				report_error("Error. Symbol " + curVar.name + " redefinition", formPar);
 				continue;
 			}
 			Struct type = formPar.getType().struct;
 			if (curVar.isArray) {
-				if (type == Tab.intType) {
-					Tab.insert(Obj.Var, curVar.name, arrayIntType);
-				} else if (type == Tab.charType) {
-					Tab.insert(Obj.Var, curVar.name, arrayCharType);
-				} else if (type == boolType) {
-					Tab.insert(Obj.Var, curVar.name, arrayBoolType);
+				if (type == SymTab.intType) {
+					SymTab.insert(Obj.Var, curVar.name, SymTab.arrayIntType);
+				} else if (type == SymTab.charType) {
+					SymTab.insert(Obj.Var, curVar.name, SymTab.arrayCharType);
+				} else if (type == SymTab.boolType) {
+					SymTab.insert(Obj.Var, curVar.name, SymTab.arrayBoolType);
 				} else {
 					report_error("BIG ERROR. Undefined variable type", formPar);
 				}
 			} else {
-				Tab.insert(Obj.Var, curVar.name, type);
+				SymTab.insert(Obj.Var, curVar.name, type);
 			}
 			curMethod.setLevel(curMethod.getLevel() + 1);
 		}
@@ -325,8 +318,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	// Var and Con detection, Context rules
 	public void visit(DesignatorIdent designatorIdent) {
 		String name = designatorIdent.getName();
-		Obj obj = Tab.find(name);
-		if (obj == Tab.noObj) {
+		Obj obj = SymTab.find(name);
+		if (obj == SymTab.noObj) {
 			report_error("Error. Undefined symbol " + name, designatorIdent);
 			designatorIdent.obj = obj;
 			return;
@@ -345,8 +338,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. " + designatorIdentRef.getNamespace() + " is not a namespace", designatorIdentRef);
 		}
 		String name = designatorIdentRef.getNamespace() + "::" + designatorIdentRef.getName();
-		Obj obj = Tab.find(name);
-		if (obj == Tab.noObj) {
+		Obj obj = SymTab.find(name);
+		if (obj == SymTab.noObj) {
 			report_error("Error. Undefined symbol " + name, designatorIdentRef);
 			designatorIdentRef.obj = obj;
 			return;
@@ -363,25 +356,25 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(DesignatorIndex designatorIndex) {
 		String varName = designatorIndex.getDesignator().obj.getName();
 		Struct varType = designatorIndex.getDesignator().obj.getType();
-		if (varType != arrayIntType && varType != arrayCharType && varType != arrayBoolType) {
+		if (varType != SymTab.arrayIntType && varType != SymTab.arrayCharType && varType != SymTab.arrayBoolType) {
 			report_error("Error. " + varName + " is not an array", designatorIndex);
-			designatorIndex.obj = Tab.noObj;
+			designatorIndex.obj = SymTab.noObj;
 			return;
 		}
-		Struct type = Tab.noType;
-		if (varType == arrayIntType) {
-			type = Tab.intType;
+		Struct type = SymTab.noType;
+		if (varType == SymTab.arrayIntType) {
+			type = SymTab.intType;
 		}
-		if (varType == arrayCharType) {
-			type = Tab.charType;
+		if (varType == SymTab.arrayCharType) {
+			type = SymTab.charType;
 		}
-		if (varType == arrayBoolType) {
-			type = boolType;
+		if (varType == SymTab.arrayBoolType) {
+			type = SymTab.boolType;
 		}
 		designatorIndex.obj = new Obj(Obj.Elem, varName, type);
 
 		Struct exprType = designatorIndex.getExpr().struct;
-		if (exprType != Tab.intType) {
+		if (exprType != SymTab.intType) {
 			report_error("Error. Array index must be of type int", designatorIndex);
 		}
 	}
@@ -394,33 +387,33 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Struct arrayType = factorNewExpr.getType().struct;
 		Struct exprType = factorNewExpr.getExpr().struct;
 
-		if (exprType != Tab.intType) {
+		if (exprType != SymTab.intType) {
 			report_error("Error. Argument of new must be type int", factorNewExpr);
 		}
 
-		if (arrayType == Tab.intType) {
-			factorNewExpr.struct = arrayIntType;
+		if (arrayType == SymTab.intType) {
+			factorNewExpr.struct = SymTab.arrayIntType;
 		}
 
-		if (arrayType == Tab.charType) {
-			factorNewExpr.struct = arrayCharType;
+		if (arrayType == SymTab.charType) {
+			factorNewExpr.struct = SymTab.arrayCharType;
 		}
 
-		if (arrayType == boolType) {
-			factorNewExpr.struct = arrayBoolType;
+		if (arrayType == SymTab.boolType) {
+			factorNewExpr.struct = SymTab.arrayBoolType;
 		}
 	}
 
 	public void visit(FactorBool factorBool) {
-		factorBool.struct = boolType;
+		factorBool.struct = SymTab.boolType;
 	}
 
 	public void visit(FactorChar factorChar) {
-		factorChar.struct = Tab.charType;
+		factorChar.struct = SymTab.charType;
 	}
 
 	public void visit(FactorNum factorNum) {
-		factorNum.struct = Tab.intType;
+		factorNum.struct = SymTab.intType;
 	}
 
 	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
@@ -428,13 +421,13 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		String name = factorDesignatorFuncPars.getDesignator().obj.getName();
 		if (obj.getKind() != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFuncPars);
-			factorDesignatorFuncPars.struct = Tab.noType;
+			factorDesignatorFuncPars.struct = SymTab.noType;
 			actParsTypes.clear();
 			return;
 		}
 		if (actParsTypes.size() != obj.getLevel()) {
 			report_error("Error. Invalid function argument count", factorDesignatorFuncPars);
-			factorDesignatorFuncPars.struct = Tab.noType;
+			factorDesignatorFuncPars.struct = SymTab.noType;
 			actParsTypes.clear();
 			return;
 		}
@@ -443,10 +436,10 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		for (int i = 0; i < actParsTypes.size(); ++i) {
 			Struct actType = actParsTypes.get(i);
 			Struct formType = formPars.get(i).getType();
-			if (actType != formType && (!(name == "len" && actParsTypes.get(i) == arrayIntType
-					|| actParsTypes.get(i) == arrayCharType || actParsTypes.get(i) == arrayBoolType))) {
+			if (actType != formType && (!(name == "len" && actParsTypes.get(i) == SymTab.arrayIntType
+					|| actParsTypes.get(i) == SymTab.arrayCharType || actParsTypes.get(i) == SymTab.arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", factorDesignatorFuncPars);
-				factorDesignatorFuncPars.struct = Tab.noType;
+				factorDesignatorFuncPars.struct = SymTab.noType;
 				actParsTypes.clear();
 				return;
 			}
@@ -462,7 +455,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		String name = factorDesignatorFunc.getDesignator().obj.getName();
 		if (kind != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFunc);
-			factorDesignatorFunc.struct = Tab.noType;
+			factorDesignatorFunc.struct = SymTab.noType;
 			return;
 		}
 		Struct designatorType = factorDesignatorFunc.getDesignator().obj.getType();
@@ -482,12 +475,12 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		Struct termType = termMulFactor.getTerm().struct;
 		Struct factorType = termMulFactor.getFactor().struct;
 
-		if (!(termType == Tab.intType && factorType == Tab.intType)) {
+		if (!(termType == SymTab.intType && factorType == SymTab.intType)) {
 			report_error("Error. Factors must be of type int", termMulFactor);
 			return;
 		}
 
-		termMulFactor.struct = Tab.intType;
+		termMulFactor.struct = SymTab.intType;
 	}
 
 	public void visit(ExprTerm exprTerm) {
@@ -497,23 +490,23 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(ExprMinusTerm exprMinusTerm) {
 		Struct termType = exprMinusTerm.getTerm().struct;
 
-		if (termType != Tab.intType) {
+		if (termType != SymTab.intType) {
 			report_error("Error. Term must be of type int", exprMinusTerm);
 		}
 
-		exprMinusTerm.struct = Tab.intType;
+		exprMinusTerm.struct = SymTab.intType;
 	}
 
 	public void visit(ExprAddTerm exprAddTerm) {
 		Struct exprType = exprAddTerm.getExpr().struct;
 		Struct termType = exprAddTerm.getTerm().struct;
 
-		if (!(termType == Tab.intType && exprType == Tab.intType)) {
+		if (!(termType == SymTab.intType && exprType == SymTab.intType)) {
 			report_error("Error. Terms must be of type int", exprAddTerm);
 			return;
 		}
 
-		exprAddTerm.struct = Tab.intType;
+		exprAddTerm.struct = SymTab.intType;
 	}
 
 	public void visit(CondFactExpr condFactExpr) {
@@ -526,17 +519,17 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 		if (exprType != expr1Type) {
 			report_info("Error. Condition types do not match", condFactRelExpr);
-			condFactRelExpr.struct = Tab.noType;
+			condFactRelExpr.struct = SymTab.noType;
 			return;
 		}
 
-		condFactRelExpr.struct = boolType;
+		condFactRelExpr.struct = SymTab.boolType;
 	}
 
 	public void visit(CondTermFact condTermFact) {
 		Struct factType = condTermFact.getCondFact().struct;
-		if (factType != boolType) {
-			condTermFact.struct = Tab.noType;
+		if (factType != SymTab.boolType) {
+			condTermFact.struct = SymTab.noType;
 			return;
 		}
 		condTermFact.struct = factType;
@@ -544,8 +537,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(CondTermAndFact condTermAndFact) {
 		Struct factType = condTermAndFact.getCondFact().struct;
-		if (factType != boolType) {
-			condTermAndFact.struct = Tab.noType;
+		if (factType != SymTab.boolType) {
+			condTermAndFact.struct = SymTab.noType;
 			return;
 		}
 		condTermAndFact.struct = factType;
@@ -553,8 +546,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(ConditionTerm conditionTerm) {
 		Struct termType = conditionTerm.getCondTerm().struct;
-		if (termType != boolType) {
-			conditionTerm.struct = Tab.noType;
+		if (termType != SymTab.boolType) {
+			conditionTerm.struct = SymTab.noType;
 			return;
 		}
 		conditionTerm.struct = termType;
@@ -562,8 +555,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(ConditionOrTerm conditionOrTerm) {
 		Struct termType = conditionOrTerm.getCondTerm().struct;
-		if (termType != boolType) {
-			conditionOrTerm.struct = Tab.noType;
+		if (termType != SymTab.boolType) {
+			conditionOrTerm.struct = SymTab.noType;
 			return;
 		}
 		conditionOrTerm.struct = termType;
@@ -616,8 +609,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		for (int i = 0; i < actParsTypes.size(); ++i) {
 			Struct actType = actParsTypes.get(i);
 			Struct formType = formPars.get(i).getType();
-			if (actType != formType && (!(funcName == "len" && actParsTypes.get(i) == arrayIntType
-					|| actParsTypes.get(i) == arrayCharType || actParsTypes.get(i) == arrayBoolType))) {
+			if (actType != formType && (!(funcName == "len" && actParsTypes.get(i) == SymTab.arrayIntType
+					|| actParsTypes.get(i) == SymTab.arrayCharType || actParsTypes.get(i) == SymTab.arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", funcCallArg);
 			}
 		}
@@ -649,7 +642,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Invalid increment operand " + designatorObj.getName(), increment);
 			return;
 		}
-		if (designatorObj.getType() != Tab.intType) {
+		if (designatorObj.getType() != SymTab.intType) {
 			report_error("Error. " + designatorObj.getName() + " is not a number", increment);
 			return;
 		}
@@ -662,7 +655,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Invalid decrement operand " + designatorObj.getName(), decrement);
 			return;
 		}
-		if (designatorObj.getType() != Tab.intType) {
+		if (designatorObj.getType() != SymTab.intType) {
 			report_error("Error. " + designatorObj.getName() + " is not a number", decrement);
 			return;
 		}
@@ -675,8 +668,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			report_error("Error. Cannot read " + designatorObj.getName(), stmtRead);
 			return;
 		}
-		if (designatorObj.getType() != Tab.intType && designatorObj.getType() != Tab.charType
-				&& designatorObj.getType() != boolType) {
+		if (designatorObj.getType() != SymTab.intType && designatorObj.getType() != SymTab.charType
+				&& designatorObj.getType() != SymTab.boolType) {
 			report_error("Error. " + designatorObj.getName() + " must be int, char or bool type", stmtRead);
 			return;
 		}
@@ -685,7 +678,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(StmtPrintExpr stmtPrintExpr) {
 		Struct exprType = stmtPrintExpr.getExpr().struct;
 
-		if (exprType != Tab.intType && exprType != Tab.charType && exprType != boolType) {
+		if (exprType != SymTab.intType && exprType != SymTab.charType && exprType != SymTab.boolType) {
 			report_error("Error. Print expression must be of int, char or bool type", stmtPrintExpr);
 		}
 	}
@@ -693,24 +686,24 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(StmtPrintExprNum stmtPrintExprNum) {
 		Struct exprType = stmtPrintExprNum.getExpr().struct;
 
-		if (exprType != Tab.intType && exprType != Tab.charType && exprType != boolType) {
+		if (exprType != SymTab.intType && exprType != SymTab.charType && exprType != SymTab.boolType) {
 			report_error("Error. Print expression must be of int, char or bool type", stmtPrintExprNum);
 		}
 	}
 
 	public void visit(StmtReturn stmtReturn) {
-		if (curMethod == Tab.noObj || curMethod == null) {
+		if (curMethod == SymTab.noObj || curMethod == null) {
 			report_error("Error. Return statement found outside a function", stmtReturn);
 			return;
 		}
-		if (curMethod.getType() != Tab.noType) {
+		if (curMethod.getType() != SymTab.noType) {
 			report_error("Error. Function must return a value", stmtReturn);
 			return;
 		}
 	}
 
 	public void visit(StmtReturnExpr stmtReturnExpr) {
-		if (curMethod == Tab.noObj || curMethod == null) {
+		if (curMethod == SymTab.noObj || curMethod == null) {
 			report_error("Error. Return statement found outside a function", stmtReturnExpr);
 			return;
 		}
@@ -726,7 +719,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(StmtIf stmtIf) {
 		Struct cndType = stmtIf.getCondition().struct;
 
-		if (cndType != boolType) {
+		if (cndType != SymTab.boolType) {
 			report_error("Error. Condition must be of type bool", stmtIf);
 			return;
 		}
@@ -735,7 +728,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	public void visit(StmtIfElse stmtIfElse) {
 		Struct cndType = stmtIfElse.getCondition().struct;
 
-		if (cndType != boolType) {
+		if (cndType != SymTab.boolType) {
 			report_error("Error. Condition must be of type bool", stmtIfElse);
 			return;
 		}

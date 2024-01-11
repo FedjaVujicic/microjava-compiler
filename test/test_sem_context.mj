@@ -10,7 +10,7 @@ bool cnd, cndArr[];
 		return 1;
 	}
 	
-	int func2() {
+	int func2(bool cnd[]) {
 	}
 	
 	void main() {	
@@ -26,5 +26,6 @@ bool cnd, cndArr[];
 		chr(5);
 		z = len(cndArr);
 		func(z, x, 'c');	
+		func2(cndArr);
 	}	
 }
