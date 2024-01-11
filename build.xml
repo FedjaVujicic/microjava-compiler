@@ -8,6 +8,7 @@
 				<exclude name="util/Log4JUtils.java"/>
 				<exclude name="SemanticAnalyzer.java"/>
 				<exclude name="CodeGenerator.java"/>
+				<exclude name="CounterVisitor.java"/>
 				<exclude name="VarInfo.java"/>
 				<exclude name="ConstInfo.java"/>
 				<exclude name="SymTab.java"/>
