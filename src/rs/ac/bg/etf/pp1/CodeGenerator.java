@@ -75,6 +75,10 @@ public class CodeGenerator extends VisitorAdaptor {
 		}
 	}
 
+	public void visit(ExprMinusTerm exprMinusTerm) {
+		Code.put(Code.neg);
+	}
+	
 	public void visit(OpAdd opAdd) {
 		nextAddOp.push(AddOper.ADD);
 	}
