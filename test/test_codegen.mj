@@ -18,18 +18,18 @@ const bool cnd = true;
 		ns::y = 5;
 		ns::y++; ns::y--; ns::y++; ns::y--;
 		
-//		print(a -(- 2 * a / 2));
+		print(a -(- 2 * a / 2), 3);
+		print(c, 3);
+		print(b, 2);
+		print(ns::x, 4);
+		print(ns::y, 3);
+		
+		
+//		read(c);
 //		print(c);
+//		read(a);
+//		print(a);
+//		read(b);
 //		print(b);
-//		print(ns::x);
-//		print(ns::y);
-		
-		
-		read(c);
-		print(c);
-		read(a);
-		print(a);
-		read(b);
-		print(b);
 	}
 }
