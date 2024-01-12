@@ -48,6 +48,30 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.put(Code.return_);
 	}
 
+	public void visit(StmtRead stmtRead) {
+		Obj designatorObj = stmtRead.getDesignator().obj;
+		if (designatorObj.getType() == SymTab.charType) {
+			Code.put(Code.bread);
+			Code.store(stmtRead.getDesignator().obj);
+		} else if (designatorObj.getType() == SymTab.boolType) {
+			Code.put(Code.read);
+			Code.put(Code.dup);
+			Code.loadConst(0);
+			Code.put(Code.jcc + Code.lt);
+			Code.put2(8);
+			Code.put(Code.dup);
+			Code.loadConst(1);
+			Code.put(Code.jcc + Code.le);
+			Code.put2(5);
+			Code.put(Code.trap);
+			Code.put(1);
+			Code.store(stmtRead.getDesignator().obj);
+		} else {
+			Code.put(Code.read);
+			Code.store(stmtRead.getDesignator().obj);
+		}
+	}
+
 	public void visit(StmtPrintExpr stmtPrintExpr) {
 		if (stmtPrintExpr.getExpr().struct == SymTab.charType) {
 			Code.loadConst(2);

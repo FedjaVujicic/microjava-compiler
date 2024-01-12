@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="MJCompiler" default="compile" basedir=".">
-
+	
 	<target name="delete">
 		<delete>
 			<fileset dir="src/rs/ac/bg/etf/pp1">
@@ -73,6 +73,7 @@
 	<target name="runObj" depends="disasm" >
 		<java classname="rs.etf.pp1.mj.runtime.Run">
 			<arg value="${basedir}/test/program.obj"/>
+			<redirector input="input.txt"></redirector>
 			<classpath>
 				<pathelement location="lib/mj-runtime.jar"/>
 			</classpath>

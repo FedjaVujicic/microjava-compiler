@@ -13,3 +13,4 @@ src/rs/ac/bg/etf/pp1/MJParser.java
 
 test/program.obj
 test/test_codegen2.mj
+input.txt
