@@ -49,6 +49,11 @@ public class CodeGenerator extends VisitorAdaptor {
 	}
 
 	public void visit(StmtPrintExpr stmtPrintExpr) {
+		if (stmtPrintExpr.getExpr().struct == SymTab.charType) {
+			Code.loadConst(2);
+			Code.put(Code.bprint);
+			return;
+		}
 		Code.loadConst(5);
 		Code.put(Code.print);
 	}
@@ -109,4 +114,13 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.load(new Obj(Obj.Con, "$", factorNum.struct, factorNum.getNumVal(), 0));
 	}
 
+	public void visit(FactorChar factorChar) {
+		Code.load(new Obj(Obj.Con, "$", factorChar.struct, factorChar.getCharVal(), 0));
+	}
+
+	public void visit(FactorBool factorBool) {
+		boolean value = factorBool.getBoolVal();
+		int constVal = value ? 1 : 0;
+		Code.load(new Obj(Obj.Con, "$", factorBool.struct, constVal, 0));
+	}
 }

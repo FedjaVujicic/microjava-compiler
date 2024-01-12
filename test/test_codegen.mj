@@ -1,9 +1,12 @@
 program MJProgram
 
+const bool cnd = true;
+
 {
 	void main() int a; int b; int c; {
 	
 		print(5-7*4/12 %(2+(3-2*6))+227-(2-(55/2+3%(5*5/4)-3)*17)%2+4);
-		
+		print('c');
+		print(false);
 	}
 }
