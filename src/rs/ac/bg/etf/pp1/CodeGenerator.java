@@ -114,6 +114,10 @@ public class CodeGenerator extends VisitorAdaptor {
 		nextMulOp.push(MulOper.REM);
 	}
 
+	public void visit(FactorDesignator factorDesignator) {
+		Code.load(factorDesignator.getDesignator().obj);
+	}
+
 	public void visit(FactorNum factorNum) {
 		Code.load(new Obj(Obj.Con, "$", factorNum.struct, factorNum.getNumVal(), 0));
 	}
@@ -130,10 +134,6 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(Assignment assignment) {
 		Code.store(assignment.getDesignator().obj);
-	}
-
-	public void visit(FactorDesignator factorDesignator) {
-		Code.load(factorDesignator.getDesignator().obj);
 	}
 
 }
