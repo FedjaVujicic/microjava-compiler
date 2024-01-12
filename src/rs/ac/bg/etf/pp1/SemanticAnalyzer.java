@@ -24,7 +24,6 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	ArrayList<String> namespaces = new ArrayList<String>();
 	ArrayList<Struct> actParsTypes = new ArrayList<Struct>();
 
-
 	Logger log = Logger.getLogger(getClass());
 
 	public void report_error(String message, SyntaxNode info) {
@@ -123,7 +122,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 				curVars.clear();
 				return;
 			}
-			if (SymTab.find(curVar.name) != SymTab.noObj) {
+			if (SymTab.currentScope.findSymbol(curVar.name) != null) {
 				report_error("Error. Symbol " + curVar.name + " redefinition", varDecl);
 				continue;
 			}

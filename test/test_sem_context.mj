@@ -13,7 +13,7 @@ bool cnd, cndArr[];
 	int func2(bool cnd[]) {
 	}
 	
-	void main() {	
+	void main() int x[]; char y; int z; {	
 		z = -5+6*7-8/9%10;
 		x = new int[-5+6*7-8/9%10];
 		x[5] = 5;
