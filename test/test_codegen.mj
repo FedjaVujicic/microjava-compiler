@@ -1,13 +1,23 @@
 program MJProgram
 
+namespace ns {
+	int x;
+	{}
+}
+
 const bool cnd = true;
 
 {
-	void main() int a; int b; int c; {
-	
-		print(5-7*4/12 %(2+(3-2*6))+227-(2-(55/2+3%(5*5/4)-3)*17)%2+4);
-		print('c');
-		print(false);
-		print((-5)*(-(-(-5))+3/3-(-5)+2*7/3-(-12/4)));
+	void main() int a; bool b; char c; {
+		
+		a = 5-7*4/12 %(2+(3-2*6))+227-(2-(55/2+3%(5*5/4)-3)*17)%2+4;
+		b = false;
+		c = 'c';
+		ns::x = (-5)*(-(-(-5))+3/3-(-5)+2*7/3-(-12/4));
+		
+		print(a -(- 2 * a / 2));
+		print(c);
+		print(b);
+		print(ns::x);
 	}
 }

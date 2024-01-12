@@ -78,7 +78,7 @@ public class CodeGenerator extends VisitorAdaptor {
 	public void visit(ExprMinusTerm exprMinusTerm) {
 		Code.put(Code.neg);
 	}
-	
+
 	public void visit(OpAdd opAdd) {
 		nextAddOp.push(AddOper.ADD);
 	}
@@ -127,4 +127,13 @@ public class CodeGenerator extends VisitorAdaptor {
 		int constVal = value ? 1 : 0;
 		Code.load(new Obj(Obj.Con, "$", factorBool.struct, constVal, 0));
 	}
+
+	public void visit(Assignment assignment) {
+		Code.store(assignment.getDesignator().obj);
+	}
+
+	public void visit(FactorDesignator factorDesignator) {
+		Code.load(factorDesignator.getDesignator().obj);
+	}
+
 }
