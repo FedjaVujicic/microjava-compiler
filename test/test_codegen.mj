@@ -7,6 +7,10 @@ namespace ns {
 }
 
 const bool cnd = true;
+int arr1[];
+char arr2[];
+bool arr3[];
+
 
 {
 	void main() int a; bool b; char c; {
@@ -24,7 +28,20 @@ const bool cnd = true;
 		print(ns::x, 4);
 		print(ns::y, 3);
 		
+		arr1 = new int[25];
+		arr1[21] = 69;
+		arr1[13] = 69;
+		print(arr1[21] + arr1[13]);
 		
+		arr2 = new char[14];
+		arr2[7] = 'c';
+		print(arr2[7]);
+		
+		arr3 = new bool[2];
+		arr3[1] = false;
+		print(arr3[1]);		
+		
+				
 //		read(c);
 //		print(c);
 //		read(a);

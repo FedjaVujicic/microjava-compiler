@@ -156,6 +156,30 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.load(new Obj(Obj.Con, "$", factorBool.struct, constVal, 0));
 	}
 
+	public void visit(FactorNewExpr factorNewExpr) {
+		Struct arrType = factorNewExpr.struct.getElemType();
+		if (arrType == SymTab.charType) {
+			Code.put(Code.newarray);
+			Code.put(0);
+		} else {
+			Code.put(Code.newarray);
+			Code.put(1);
+		}
+
+	}
+
+	public void visit(DesignatorIndex designatorIndex) {
+		if (designatorIndex.obj.getKind() == Obj.Elem) {
+			String varName = designatorIndex.obj.getName();
+			Obj arrObj = designatorIndex.getDesignator().obj;
+			Code.load(arrObj);
+			Code.put(Code.dup_x1);
+			Code.put(Code.pop);
+			return;
+		}
+		Code.load(designatorIndex.obj);
+	}
+
 	public void visit(Assignment assignment) {
 		Code.store(assignment.getDesignator().obj);
 	}
