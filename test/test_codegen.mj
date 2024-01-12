@@ -2,6 +2,7 @@ program MJProgram
 
 namespace ns {
 	int x;
+	int y;
 	{}
 }
 
@@ -14,10 +15,13 @@ const bool cnd = true;
 		b = false;
 		c = 'c';
 		ns::x = (-5)*(-(-(-5))+3/3-(-5)+2*7/3-(-12/4));
+		ns::y = 5;
+		ns::y++; ns::y--; ns::y++; ns::y--;
 		
 		print(a -(- 2 * a / 2));
 		print(c);
 		print(b);
 		print(ns::x);
+		print(ns::y);
 	}
 }
