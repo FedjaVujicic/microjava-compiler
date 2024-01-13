@@ -18,6 +18,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	int nVars;
 	Struct curConstType;
 	Obj curMethod;
+	boolean isForLoop = false;
 
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
@@ -734,12 +735,22 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(StmtBreak stmtBreak) {
-		// Works because for loops are not supported
-		report_error("Error. Break statement found outside a for loop", stmtBreak);
+		if (!isForLoop) {
+			report_error("Error. Break statement found outside a for loop", stmtBreak);
+		}
 	}
 
 	public void visit(StmtContinue stmtContinue) {
-		// Works because for loops are not supported
-		report_error("Error. Continue statement found outside a for loop", stmtContinue);
+		if (!isForLoop) {
+			report_error("Error. Break statement found outside a for loop", stmtContinue);
+		}
+	}
+
+	public void visit(StmtFor stmtFor) {
+		isForLoop = false;
+	}
+
+	public void visit(ForEntry forEntry) {
+		isForLoop = true;
 	}
 }

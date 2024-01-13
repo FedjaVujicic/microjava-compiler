@@ -8,6 +8,8 @@ program MJProgram
 			print(' ');
 			print(i);
 			[i, ,i , i, , *i] = i;
+			break;
+			continue;
 		}
 	}
 }
