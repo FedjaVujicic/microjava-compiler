@@ -1,13 +1,14 @@
 program MJProgram
 
 {
-	void main() int i; {
+	void main() int i; int arr[]; char c; bool arrB1[]; bool arrB2[]; bool b; {
 		for (i = 0, i = 2; i < 10 ; i++, i--) {
 			print('i');
 			print(':');
 			print(' ');
 			print(i);
-			[i, ,i , i, , *i] = i;
+			[i, , arr[2] , i, , *arr] = arr;
+			[b, , , ,*arrB1] = arrB2;
 			break;
 			continue;
 		}

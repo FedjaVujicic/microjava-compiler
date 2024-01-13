@@ -20,6 +20,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	Obj curMethod;
 	boolean isForLoop = false;
 
+	Struct multipleAssignmentType = SymTab.noType;
+
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
 	ArrayList<String> namespaces = new ArrayList<String>();
@@ -752,5 +754,58 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(ForEntry forEntry) {
 		isForLoop = true;
+	}
+
+	public void visit(MultipleAssignment multipleAssignment) {
+		Obj rightArrDesignatorObj = multipleAssignment.getDesignator1().obj;
+		Obj leftArrDesignatorObj = multipleAssignment.getDesignator().obj;
+		if (rightArrDesignatorObj.getType() != SymTab.arrayIntType
+				&& rightArrDesignatorObj.getType() != SymTab.arrayCharType
+				&& rightArrDesignatorObj.getType() != SymTab.arrayBoolType) {
+			report_error("Error. Right side operand must be of type array", multipleAssignment);
+			return;
+		}
+		if (leftArrDesignatorObj.getType() != SymTab.arrayIntType
+				&& leftArrDesignatorObj.getType() != SymTab.arrayCharType
+				&& leftArrDesignatorObj.getType() != SymTab.arrayBoolType) {
+			report_error("Error. Last left side operand must be of type array", multipleAssignment);
+			return;
+		}
+		if (rightArrDesignatorObj.getType() != leftArrDesignatorObj.getType()) {
+			report_error("Error. Array types do not match", multipleAssignment);
+		}
+		if (multipleAssignmentType == SymTab.intType && (leftArrDesignatorObj.getType() != SymTab.arrayIntType
+				|| rightArrDesignatorObj.getType() != SymTab.arrayIntType)) {
+			report_error("Error. Type mismatch", multipleAssignment);
+		}
+		if (multipleAssignmentType == SymTab.charType && (leftArrDesignatorObj.getType() != SymTab.arrayCharType
+				|| rightArrDesignatorObj.getType() != SymTab.arrayCharType)) {
+			report_error("Error. Type mismatch", multipleAssignment);
+		}
+		if (multipleAssignmentType == SymTab.boolType && (leftArrDesignatorObj.getType() != SymTab.arrayBoolType
+				|| rightArrDesignatorObj.getType() != SymTab.arrayBoolType)) {
+			report_error("Error. Type mismatch", multipleAssignment);
+		}
+
+		multipleAssignmentType = SymTab.noType;
+	}
+
+	public void visit(DesignatorListElem designatorListElem) {
+		int designatorKind = designatorListElem.getDesignator().obj.getKind();
+		Struct designatorType = designatorListElem.getDesignator().obj.getType();
+
+		if (designatorKind != Obj.Var && designatorKind != Obj.Elem) {
+			report_error("Error. Operand must be a variable or array element", designatorListElem);
+		}
+		if (designatorType == SymTab.arrayBoolType || designatorType == SymTab.arrayCharType
+				|| designatorType == SymTab.arrayIntType) {
+			report_error("Error. Operand must be a variable or array element", designatorListElem);
+		}
+
+		if (multipleAssignmentType == SymTab.noType) {
+			multipleAssignmentType = designatorType;
+		} else if (designatorType != multipleAssignmentType) {
+			report_error("Error. Type mismatch", designatorListElem);
+		}
 	}
 }
