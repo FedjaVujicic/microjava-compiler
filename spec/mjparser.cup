@@ -62,7 +62,7 @@ terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
-nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry;
+nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt;
 nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
@@ -196,7 +196,7 @@ Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			| 
 			(StmtPrintExprNum) PRINT LPAREN Expr COMMA NUM_CONST:width RPAREN SEMICOLON
 			|
-			(StmtFor) FOR LPAREN DesignatorStatementListOpt SEMICOLON CondFact SEMICOLON DesignatorStatementListOpt ForEntry Statement
+			(StmtFor) FOR LPAREN DesignatorStatementListOpt SEMICOLON CondFactOpt SEMICOLON DesignatorStatementListOpt ForEntry Statement
 			|
 			(StmtList) LBRACE StatementList RBRACE
 			;
@@ -212,6 +212,11 @@ CondTerm ::= (CondTermFact) CondFact
 			| 
 			(CondTermAndFact) CondTerm AND CondFact
 			;
+
+CondFactOpt ::= (CondFactNon)
+				|
+				(CondFactOui) CondFact
+				;
 
 CondFact ::= (CondFactExpr) Expr
 			| 

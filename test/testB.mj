@@ -2,7 +2,7 @@ program MJProgram
 
 {
 	void main() int i; {
-		for (i = 0, i = 2; i < 10; i++, i--) {
+		for (i = 0, i = 2; i < 10 ; i++, i--) {
 			print('i');
 			print(':');
 			print(' ');
