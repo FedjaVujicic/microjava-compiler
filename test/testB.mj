@@ -8,10 +8,12 @@ program MJProgram
 		print(0);
 	}
 	
-	void f1() {
+	int f1() {
 		print('f');
 		print(1);
+		return 5;
 	}
+	
 	
 	void main() {
 		f0();

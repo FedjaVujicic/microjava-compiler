@@ -45,8 +45,18 @@ public class CodeGenerator extends VisitorAdaptor {
 	}
 
 	public void visit(MethodDecl methodDecl) {
+		Struct retType = methodDecl.getMethodTypeName().getRetType().struct;
+		if (retType == SymTab.noType) {
+			Code.put(Code.exit);
+			Code.put(Code.return_);
+		}
+		Code.put(Code.trap);
+		Code.put(1);
+	}
+		
+	public void visit(StmtReturnExpr stmtReturnExpr) {
 		Code.put(Code.exit);
-		Code.put(Code.return_);
+		Code.put(Code.return_);		
 	}
 
 	public void visit(StmtRead stmtRead) {
