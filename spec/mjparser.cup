@@ -63,7 +63,7 @@ terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList;
-nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatement, Assignop;
+nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType, AssignExpr, Condition, CondTerm, CondFact, Expr, Term, Factor;
@@ -195,7 +195,9 @@ Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			(StmtPrintExpr) PRINT LPAREN Expr RPAREN SEMICOLON
 			| 
 			(StmtPrintExprNum) PRINT LPAREN Expr COMMA NUM_CONST:width RPAREN SEMICOLON
-			| 
+			|
+			(StmtFor) FOR LPAREN DesignatorStatementListOpt SEMICOLON CondFact SEMICOLON DesignatorStatementListOpt RPAREN Statement
+			|
 			(StmtList) LBRACE StatementList RBRACE
 			;				
 
@@ -286,6 +288,16 @@ Relop ::= (OpEqual) EQUAL
 		(OpLesserEqual) LESSER_EQUAL
 		;
 		
+DesignatorStatementListOpt ::= (DesignatorStatementNone)
+							|
+							(DesignatorStatementOui) DesignatorStatementList
+							;
+							
+DesignatorStatementList ::= (DesignatorStatementOne) DesignatorStatement
+							|
+							(DesignatorStatementMul) DesignatorStatementList DesignatorStatement
+							;
+
 DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
 						|
 						(FuncCallNoArg) Designator LPAREN RPAREN
