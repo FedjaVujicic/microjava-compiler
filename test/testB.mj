@@ -6,7 +6,8 @@ program MJProgram
 			print('i');
 			print(':');
 			print(' ');
-			print(i);			
+			print(i);
+			[i, ,i , i, , *i] = i;
 		}
 	}
 }

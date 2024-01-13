@@ -265,6 +265,14 @@ Designator ::= (DesignatorIdent) IDENT:name
 			(DesignatorIndex) Designator LSQUARE Expr RSQUARE
 			;
 
+DesignatorList ::= (DesignatorListNone)
+				| 
+				(DesignatorListNoElem) DesignatorList COMMA
+				| 
+				(DesignatorListElem) DesignatorList Designator COMMA
+				;
+				
+
 ActPars ::= (ActParsOneExpr) Expr
 			| 
 			(ActParsMulExpr) ActPars COMMA Expr
@@ -299,6 +307,8 @@ DesignatorStatementList ::= (DesignatorStatementOne) DesignatorStatement
 							;
 
 DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
+						|
+						(MultipleAssignment) LSQUARE DesignatorList MUL Designator RSQUARE Assignop Designator
 						|
 						(FuncCallNoArg) Designator LPAREN RPAREN
 						| 
