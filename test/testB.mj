@@ -1,23 +1,28 @@
 program MJProgram
 
-
 {
 
-	void f0() {
-		print('f');
-		print(0);
+	int print_and_mul(char a, char b, int c, int d) {
+		print(a);
+		print(b);
+		return c * d;
 	}
 	
-	int f1() {
-		print('f');
-		print(1);
-		return 5;
+	int square(int val) {
+		return val * val;
 	}
 	
+	int double(int val) {
+		return 2 * val;
+	}
 	
+	int double_and_square(int val) {
+		return square(double(val));
+	}
+		
 	void main() {
-		f0();
-		f1();
+		print(print_and_mul('h', 'i', 20, 20));
+		print(double_and_square(10));
 	}
 
 }

@@ -53,10 +53,10 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.put(Code.trap);
 		Code.put(1);
 	}
-		
+
 	public void visit(StmtReturnExpr stmtReturnExpr) {
 		Code.put(Code.exit);
-		Code.put(Code.return_);		
+		Code.put(Code.return_);
 	}
 
 	public void visit(StmtRead stmtRead) {
@@ -153,6 +153,18 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.load(factorDesignator.getDesignator().obj);
 	}
 
+	public void visit(FactorDesignatorFunc factorDesignatorFunc) {
+		int offset = factorDesignatorFunc.getDesignator().obj.getAdr() - Code.pc;
+		Code.put(Code.call);
+		Code.put2(offset);		
+	}
+
+	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
+		int offset = factorDesignatorFuncPars.getDesignator().obj.getAdr() - Code.pc;
+		Code.put(Code.call);
+		Code.put2(offset);
+	}
+
 	public void visit(FactorNum factorNum) {
 		Code.load(new Obj(Obj.Con, "$", factorNum.struct, factorNum.getNumVal(), 0));
 	}
@@ -211,6 +223,12 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(FuncCallNoArg funcCallNoArg) {
 		int offset = funcCallNoArg.getDesignator().obj.getAdr() - Code.pc;
+		Code.put(Code.call);
+		Code.put2(offset);
+	}
+	
+	public void visit(FuncCallArg funcCallArg) {
+		int offset = funcCallArg.getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
 		Code.put2(offset);
 	}
