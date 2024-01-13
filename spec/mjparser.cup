@@ -295,7 +295,7 @@ DesignatorStatementListOpt ::= (DesignatorStatementNone)
 							
 DesignatorStatementList ::= (DesignatorStatementOne) DesignatorStatement
 							|
-							(DesignatorStatementMul) DesignatorStatementList DesignatorStatement
+							(DesignatorStatementMul) DesignatorStatementList COMMA DesignatorStatement
 							;
 
 DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
