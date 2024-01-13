@@ -1,16 +1,21 @@
 program MJProgram
 
+
 {
-	void main() int i; int arr[]; char c; bool arrB1[]; bool arrB2[]; bool b; {
-		for (i = 0, i = 2; i < 10 ; i++, i--) {
-			print('i');
-			print(':');
-			print(' ');
-			print(i);
-			[i, , arr[2] , i, , *arr] = arr;
-			[b, , , ,*arrB1] = arrB2;
-			break;
-			continue;
-		}
+
+	void f0() {
+		print('f');
+		print(0);
 	}
+	
+	void f1() {
+		print('f');
+		print(1);
+	}
+	
+	void main() {
+		f0();
+		f1();
+	}
+
 }

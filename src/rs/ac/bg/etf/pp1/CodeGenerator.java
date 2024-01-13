@@ -28,9 +28,10 @@ public class CodeGenerator extends VisitorAdaptor {
 	}
 
 	public void visit(MethodTypeName methodTypeName) {
-		if (methodTypeName.getMethName() == "main") {
+		if (methodTypeName.getMethName().equalsIgnoreCase("main")) {
 			mainPc = Code.pc;
 		}
+		methodTypeName.obj.setAdr(Code.pc);
 
 		SyntaxNode methodNode = methodTypeName.getParent();
 		VarCounter varCounter = new VarCounter();
@@ -198,4 +199,9 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.store(decrement.getDesignator().obj);
 	}
 
+	public void visit(FuncCallNoArg funcCallNoArg) {
+		int offset = funcCallNoArg.getDesignator().obj.getAdr() - Code.pc;
+		Code.put(Code.call);
+		Code.put2(offset);
+	}
 }
