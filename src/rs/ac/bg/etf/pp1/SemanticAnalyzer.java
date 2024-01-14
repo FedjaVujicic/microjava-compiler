@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.pp1;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -26,7 +27,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
-	ArrayList<String> namespaces = new ArrayList<String>();
+	HashSet<String> namespaces = new HashSet<String>();
 	public Stack<LinkedList<Struct>> actParsTypes = new Stack<LinkedList<Struct>>();
 
 	Logger log = Logger.getLogger(getClass());

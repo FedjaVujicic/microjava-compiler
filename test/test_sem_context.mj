@@ -1,9 +1,27 @@
 program MJProgram
 
+namespace ns1 {
+	int a, b, c;
+	
+	{
+	}
+}
+
+namespace ns2 {
+	int x;
+	
+	{
+		void func1() {
+		}
+	}
+}
+
 int x[];
 char y;
 int z;
 bool cnd, cndArr[];
+
+int a, b, c;
 
 {
 	int func(int a, int b[], char c) {
@@ -27,5 +45,8 @@ bool cnd, cndArr[];
 		z = len(cndArr);
 		func(z, x, 'c');	
 		func2(cndArr);
+		ns2::x = 5;
+		ns1::a = 5;
+		ns2::func1();
 	}	
 }
