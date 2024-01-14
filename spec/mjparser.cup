@@ -180,7 +180,7 @@ Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			| 
 			(StmtIf) IF LPAREN IfCnd RPAREN IfBody
 			| 
-			(StmtIfElse) IF LPAREN IfCnd RPAREN Statement ElseWord Statement
+			(StmtIfElse) IF LPAREN IfCnd RPAREN IfBody ElseWord Statement
 			| 
 			(StmtBreak) BREAK SEMICOLON
 			| 

@@ -11,12 +11,13 @@ import rs.etf.pp1.symboltable.concepts.*;
 public class CodeGenerator extends VisitorAdaptor {
 
 	private int mainPc;
+	private int endOfStatement;
 
 	Stack<MulOper> nextMulOp = new Stack<MulOper>();
 	Stack<AddOper> nextAddOp = new Stack<AddOper>();
 	Stack<RelOper> relOpStack = new Stack<RelOper>();
-	
-	Stack<Integer> thenAddrStack = new Stack<Integer>();
+
+	Stack<Integer> elseAddrStack = new Stack<Integer>();
 
 	enum MulOper {
 		MUL, DIV, REM
@@ -32,6 +33,25 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public int getMainPc() {
 		return mainPc;
+	}
+
+	public int getRelopCode(RelOper relOper) {
+		switch (relOper) {
+		case EQ:
+			return Code.eq;
+		case NE:
+			return Code.ne;
+		case LT:
+			return Code.lt;
+		case LE:
+			return Code.le;
+		case GT:
+			return Code.gt;
+		case GE:
+			return Code.ge;
+		default:
+			return -1;
+		}
 	}
 
 	public void visit(MethodTypeName methodTypeName) {
@@ -264,41 +284,28 @@ public class CodeGenerator extends VisitorAdaptor {
 		relOpStack.push(RelOper.GE);
 	}
 
-	public void visit(IfCnd ifCnd) {
+	public void visit(CondFactRelExpr condFactRelExpr) {
 		RelOper relOp = relOpStack.pop();
-		switch(relOp) {
-		case EQ:
-			thenAddrStack.push(Code.pc + 1);
-			Code.putFalseJump(Code.eq, 0);
-			break;
-		case NE:
-			thenAddrStack.push(Code.pc + 1);
-			Code.putFalseJump(Code.ne, 0);
-			break;
-		case LT:
-			thenAddrStack.push(Code.pc + 1);
-			Code.putFalseJump(Code.lt, 0);
-			break;
-		case LE:
-			thenAddrStack.push(Code.pc + 1);
-			Code.putFalseJump(Code.le, 0);
-			break;
-		case GT:
-			thenAddrStack.push(Code.pc + 1);
-			Code.putFalseJump(Code.gt, 0);
-			break;
-		case GE:
-			thenAddrStack.push(Code.pc + 1);
-			Code.putFalseJump(Code.ge, 0);
-			break;
-		}		
+		elseAddrStack.push(Code.pc + 1);
+		Code.putFalseJump(getRelopCode(relOp), 0);
 	}
-	
+
 	public void visit(StmtIf stmtIf) {
-		Code.fixup(thenAddrStack.pop());
+		Code.fixup(elseAddrStack.pop());
 	}
-	
+
+	public void visit(StmtIfElse stmtIfElse) {
+		Code.fixup(endOfStatement);
+	}
+
+	public void visit(IfBody ifBody) {
+		if (ifBody.getParent().getClass() == StmtIfElse.class) {
+			endOfStatement = Code.pc + 1;
+			Code.putJump(0);
+		}
+	}
+
 	public void visit(ElseWord elseWord) {
-		Code.fixup(thenAddrStack.pop());
+		Code.fixup(elseAddrStack.pop());
 	}
 }

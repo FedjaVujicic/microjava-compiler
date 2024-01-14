@@ -19,7 +19,7 @@ program testConditions
 			print('y');
 		else
 			if (3 < 5)
-				if (5 < 3)
+				if (5 > 3)
 					print(5);
 				else
 					print(3);
