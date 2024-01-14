@@ -431,8 +431,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			return;
 		}
 		if (actParsTypes.peek().size() != obj.getLevel()) {
-			report_error("Error. Function " + name + " takes " + obj.getLevel() + " arguments, but " + actParsTypes.peek().size()
-			+ " were provided", factorDesignatorFuncPars);
+			report_error("Error. Function " + name + " takes " + obj.getLevel() + " arguments, but "
+					+ actParsTypes.peek().size() + " were provided", factorDesignatorFuncPars);
 			factorDesignatorFuncPars.struct = SymTab.noType;
 			actParsTypes.pop();
 			return;
@@ -443,7 +443,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			Struct actType = actParsTypes.peek().get(i);
 			Struct formType = formPars.get(i).getType();
 			if (actType != formType && (!(name == "len" && actParsTypes.peek().get(i) == SymTab.arrayIntType
-					|| actParsTypes.peek().get(i) == SymTab.arrayCharType || actParsTypes.peek().get(i) == SymTab.arrayBoolType))) {
+					|| actParsTypes.peek().get(i) == SymTab.arrayCharType
+					|| actParsTypes.peek().get(i) == SymTab.arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", factorDesignatorFuncPars);
 				factorDesignatorFuncPars.struct = SymTab.noType;
 				actParsTypes.pop();
@@ -472,7 +473,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		report_info("Called function " + funcName.getDesignator().obj.getName(), funcName);
 		actParsTypes.add(new LinkedList<Struct>());
 	}
-	
+
 	public void visit(FactorDesignator factorDesignator) {
 		Struct designatorType = factorDesignator.getDesignator().obj.getType();
 		factorDesignator.struct = designatorType;
@@ -621,7 +622,8 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 			Struct actType = actParsTypes.peek().get(i);
 			Struct formType = formPars.get(i).getType();
 			if (actType != formType && (!(funcName == "len" && actParsTypes.peek().get(i) == SymTab.arrayIntType
-					|| actParsTypes.peek().get(i) == SymTab.arrayCharType || actParsTypes.peek().get(i) == SymTab.arrayBoolType))) {
+					|| actParsTypes.peek().get(i) == SymTab.arrayCharType
+					|| actParsTypes.peek().get(i) == SymTab.arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", funcCallArg);
 			}
 		}

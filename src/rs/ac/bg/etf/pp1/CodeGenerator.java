@@ -156,7 +156,7 @@ public class CodeGenerator extends VisitorAdaptor {
 	public void visit(FactorDesignatorFunc factorDesignatorFunc) {
 		int offset = factorDesignatorFunc.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
-		Code.put2(offset);		
+		Code.put2(offset);
 	}
 
 	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
@@ -226,7 +226,7 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.put(Code.call);
 		Code.put2(offset);
 	}
-	
+
 	public void visit(FuncCallArg funcCallArg) {
 		int offset = funcCallArg.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
