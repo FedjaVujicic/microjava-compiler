@@ -297,4 +297,8 @@ public class CodeGenerator extends VisitorAdaptor {
 	public void visit(StmtIf stmtIf) {
 		Code.fixup(thenAddrStack.pop());
 	}
+	
+	public void visit(ElseWord elseWord) {
+		Code.fixup(thenAddrStack.pop());
+	}
 }
