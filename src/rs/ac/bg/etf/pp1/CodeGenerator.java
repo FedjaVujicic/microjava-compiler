@@ -285,12 +285,6 @@ public class CodeGenerator extends VisitorAdaptor {
 		relOpStack.push(RelOper.GE);
 	}
 
-	public void visit(CondFactRelExpr condFactRelExpr) {
-		RelOper relOp = relOpStack.pop();
-		elseAddrStack.peek().add(Code.pc + 1);
-		Code.putFalseJump(getRelopCode(relOp), 0);
-	}
-
 	public void visit(StmtIfElse stmtIfElse) {
 		Code.fixup(stmtEndAddrStack.pop());
 	}
@@ -298,14 +292,20 @@ public class CodeGenerator extends VisitorAdaptor {
 	public void visit(IfWord ifWord) {
 		elseAddrStack.push(new ArrayList<Integer>());
 	}
-	
+
+	public void visit(CondFactRelExpr condFactRelExpr) {
+		RelOper relOp = relOpStack.pop();
+		elseAddrStack.peek().add(Code.pc + 1);
+		Code.putFalseJump(getRelopCode(relOp), 0);
+	}
+
 	public void visit(IfBody ifBody) {
 		if (ifBody.getParent().getClass() == StmtIfElse.class) {
 			stmtEndAddrStack.push(Code.pc + 1);
 			Code.putJump(0);
 		}
 		for (int addr : elseAddrStack.peek()) {
-			Code.fixup(addr);			
+			Code.fixup(addr);
 		}
 		elseAddrStack.pop();
 	}
