@@ -62,7 +62,7 @@ terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
-nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName;
+nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName, IfBody, IfCnd;
 nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
@@ -178,9 +178,9 @@ StatementList ::= (Statements) StatementList Statement
 
 Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			| 
-			(StmtIf) IF LPAREN Condition RPAREN Statement
+			(StmtIf) IF LPAREN IfCnd RPAREN IfBody
 			| 
-			(StmtIfElse) IF LPAREN Condition RPAREN Statement ELSE Statement
+			(StmtIfElse) IF LPAREN IfCnd RPAREN Statement ELSE Statement
 			| 
 			(StmtBreak) BREAK SEMICOLON
 			| 
@@ -201,7 +201,11 @@ Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			(StmtList) LBRACE StatementList RBRACE
 			;
 			
-ForEntry ::= (ForEntry) RPAREN;			
+ForEntry ::= (ForEntry) RPAREN;	
+
+IfBody ::= (IfBody) Statement;
+
+IfCnd ::= (IfCnd) Condition;
 
 Condition ::= (ConditionTerm) CondTerm
 			| 

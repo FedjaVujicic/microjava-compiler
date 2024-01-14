@@ -14,6 +14,9 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	Stack<MulOper> nextMulOp = new Stack<MulOper>();
 	Stack<AddOper> nextAddOp = new Stack<AddOper>();
+	Stack<RelOper> relOpStack = new Stack<RelOper>();
+	
+	Stack<Integer> thenAddrStack = new Stack<Integer>();
 
 	enum MulOper {
 		MUL, DIV, REM
@@ -22,6 +25,10 @@ public class CodeGenerator extends VisitorAdaptor {
 	enum AddOper {
 		ADD, SUB
 	};
+
+	enum RelOper {
+		EQ, NE, LT, LE, GT, GE
+	}
 
 	public int getMainPc() {
 		return mainPc;
@@ -231,5 +238,63 @@ public class CodeGenerator extends VisitorAdaptor {
 		int offset = funcCallArg.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
 		Code.put2(offset);
+	}
+
+	public void visit(OpEqual opEqual) {
+		relOpStack.push(RelOper.EQ);
+	}
+
+	public void visit(OpNotEqual opNotEqual) {
+		relOpStack.push(RelOper.NE);
+	}
+
+	public void visit(OpLesser opLesser) {
+		relOpStack.push(RelOper.LT);
+	}
+
+	public void visit(OpLesserEqual opLesserEqual) {
+		relOpStack.push(RelOper.LE);
+	}
+
+	public void visit(OpGreater opGreater) {
+		relOpStack.push(RelOper.GT);
+	}
+
+	public void visit(OpGreaterEqual opGreaterEqual) {
+		relOpStack.push(RelOper.GE);
+	}
+
+	public void visit(IfCnd ifCnd) {
+		RelOper relOp = relOpStack.pop();
+		switch(relOp) {
+		case EQ:
+			thenAddrStack.push(Code.pc + 1);
+			Code.putFalseJump(Code.eq, 0);
+			break;
+		case NE:
+			thenAddrStack.push(Code.pc + 1);
+			Code.putFalseJump(Code.ne, 0);
+			break;
+		case LT:
+			thenAddrStack.push(Code.pc + 1);
+			Code.putFalseJump(Code.lt, 0);
+			break;
+		case LE:
+			thenAddrStack.push(Code.pc + 1);
+			Code.putFalseJump(Code.le, 0);
+			break;
+		case GT:
+			thenAddrStack.push(Code.pc + 1);
+			Code.putFalseJump(Code.gt, 0);
+			break;
+		case GE:
+			thenAddrStack.push(Code.pc + 1);
+			Code.putFalseJump(Code.ge, 0);
+			break;
+		}		
+	}
+	
+	public void visit(StmtIf stmtIf) {
+		Code.fixup(thenAddrStack.pop());
 	}
 }

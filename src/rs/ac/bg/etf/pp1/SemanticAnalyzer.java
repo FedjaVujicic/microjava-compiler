@@ -730,7 +730,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(StmtIf stmtIf) {
-		Struct cndType = stmtIf.getCondition().struct;
+		Struct cndType = stmtIf.getIfCnd().getCondition().struct;
 
 		if (cndType != SymTab.boolType) {
 			report_error("Error. Condition must be of type bool", stmtIf);
@@ -739,7 +739,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(StmtIfElse stmtIfElse) {
-		Struct cndType = stmtIfElse.getCondition().struct;
+		Struct cndType = stmtIfElse.getIfCnd().getCondition().struct;
 
 		if (cndType != SymTab.boolType) {
 			report_error("Error. Condition must be of type bool", stmtIfElse);

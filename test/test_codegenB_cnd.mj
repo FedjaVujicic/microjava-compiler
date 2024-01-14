@@ -1,0 +1,19 @@
+program testConditions
+
+{
+	void main() {
+		if (4 == 3)
+			print('1');
+		if (4 != 3)
+			print('2');
+		if (5 < 3)
+			print('3');
+		if (3 <= 3)
+			print('4');
+		if (5 > 3)
+			print('5');
+		if (4 >= 5)
+			print('6');
+		print('G');
+	}
+}
