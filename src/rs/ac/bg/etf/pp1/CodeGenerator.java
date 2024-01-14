@@ -290,10 +290,6 @@ public class CodeGenerator extends VisitorAdaptor {
 		Code.putFalseJump(getRelopCode(relOp), 0);
 	}
 
-	public void visit(StmtIf stmtIf) {
-		Code.fixup(elseAddrStack.pop());
-	}
-
 	public void visit(StmtIfElse stmtIfElse) {
 		Code.fixup(endOfStatement);
 	}
@@ -303,9 +299,6 @@ public class CodeGenerator extends VisitorAdaptor {
 			endOfStatement = Code.pc + 1;
 			Code.putJump(0);
 		}
-	}
-
-	public void visit(ElseWord elseWord) {
 		Code.fixup(elseAddrStack.pop());
 	}
 }
