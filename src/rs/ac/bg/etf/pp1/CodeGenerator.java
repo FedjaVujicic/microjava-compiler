@@ -1,5 +1,6 @@
 package rs.ac.bg.etf.pp1;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import rs.ac.bg.etf.pp1.CounterVisitor.FormParCounter;
@@ -11,13 +12,13 @@ import rs.etf.pp1.symboltable.concepts.*;
 public class CodeGenerator extends VisitorAdaptor {
 
 	private int mainPc;
-	private int endOfStatement;
 
 	Stack<MulOper> nextMulOp = new Stack<MulOper>();
 	Stack<AddOper> nextAddOp = new Stack<AddOper>();
 	Stack<RelOper> relOpStack = new Stack<RelOper>();
 
-	Stack<Integer> elseAddrStack = new Stack<Integer>();
+	Stack<Integer> stmtEndAddrStack = new Stack<Integer>();
+	Stack<ArrayList<Integer>> elseAddrStack = new Stack<ArrayList<Integer>>();
 
 	enum MulOper {
 		MUL, DIV, REM
@@ -286,19 +287,26 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(CondFactRelExpr condFactRelExpr) {
 		RelOper relOp = relOpStack.pop();
-		elseAddrStack.push(Code.pc + 1);
+		elseAddrStack.peek().add(Code.pc + 1);
 		Code.putFalseJump(getRelopCode(relOp), 0);
 	}
 
 	public void visit(StmtIfElse stmtIfElse) {
-		Code.fixup(endOfStatement);
+		Code.fixup(stmtEndAddrStack.pop());
 	}
 
+	public void visit(IfWord ifWord) {
+		elseAddrStack.push(new ArrayList<Integer>());
+	}
+	
 	public void visit(IfBody ifBody) {
 		if (ifBody.getParent().getClass() == StmtIfElse.class) {
-			endOfStatement = Code.pc + 1;
+			stmtEndAddrStack.push(Code.pc + 1);
 			Code.putJump(0);
 		}
-		Code.fixup(elseAddrStack.pop());
+		for (int addr : elseAddrStack.peek()) {
+			Code.fixup(addr);			
+		}
+		elseAddrStack.pop();
 	}
 }
