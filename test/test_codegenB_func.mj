@@ -21,8 +21,7 @@ program MJProgram
 	}
 		
 	void main() {
-		print(print_and_mul('h', 'i', 20, 20));
-		print(double_and_square(10));
+		print(print_and_mul('h', 'i', 2, double_and_square(double_and_square(double_and_square(1)))));
 	}
 
 }

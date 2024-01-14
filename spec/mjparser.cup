@@ -62,7 +62,7 @@ terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
-nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt;
+nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName;
 nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
@@ -237,9 +237,9 @@ Term ::= (TermFactor) Factor
 		
 Factor ::= (FactorDesignator) Designator
 		| 
-		(FactorDesignatorFunc) Designator LPAREN RPAREN
+		(FactorDesignatorFunc) FuncName LPAREN RPAREN
 		| 
-		(FactorDesignatorFuncPars) Designator LPAREN ActPars RPAREN
+		(FactorDesignatorFuncPars) FuncName LPAREN ActPars RPAREN
 		| 
 		(FactorNum) NUM_CONST:numVal
 		| 
@@ -255,7 +255,9 @@ Factor ::= (FactorDesignator) Designator
 		| 
 		(FactorExpr) LPAREN Expr RPAREN
 		;	
-		
+
+FuncName ::= (FuncName) Designator;
+	
 Mulop ::= (OpMul) MUL
 		| 
 		(OpDiv) DIV
@@ -317,9 +319,9 @@ DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
 						|
 						(MultipleAssignment) LSQUARE DesignatorList MUL Designator RSQUARE Assignop Designator
 						|
-						(FuncCallNoArg) Designator LPAREN RPAREN
+						(FuncCallNoArg) FuncName LPAREN RPAREN
 						| 
-						(FuncCallArg) Designator LPAREN ActPars RPAREN
+						(FuncCallArg) FuncName LPAREN ActPars RPAREN
 						| 
 						(Increment) Designator INC
 						| 

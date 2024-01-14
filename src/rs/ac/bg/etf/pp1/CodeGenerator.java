@@ -154,13 +154,13 @@ public class CodeGenerator extends VisitorAdaptor {
 	}
 
 	public void visit(FactorDesignatorFunc factorDesignatorFunc) {
-		int offset = factorDesignatorFunc.getDesignator().obj.getAdr() - Code.pc;
+		int offset = factorDesignatorFunc.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
 		Code.put2(offset);		
 	}
 
 	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
-		int offset = factorDesignatorFuncPars.getDesignator().obj.getAdr() - Code.pc;
+		int offset = factorDesignatorFuncPars.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
 		Code.put2(offset);
 	}
@@ -222,13 +222,13 @@ public class CodeGenerator extends VisitorAdaptor {
 	}
 
 	public void visit(FuncCallNoArg funcCallNoArg) {
-		int offset = funcCallNoArg.getDesignator().obj.getAdr() - Code.pc;
+		int offset = funcCallNoArg.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
 		Code.put2(offset);
 	}
 	
 	public void visit(FuncCallArg funcCallArg) {
-		int offset = funcCallArg.getDesignator().obj.getAdr() - Code.pc;
+		int offset = funcCallArg.getFuncName().getDesignator().obj.getAdr() - Code.pc;
 		Code.put(Code.call);
 		Code.put2(offset);
 	}

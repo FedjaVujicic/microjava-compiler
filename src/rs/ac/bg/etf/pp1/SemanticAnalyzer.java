@@ -1,6 +1,8 @@
 package rs.ac.bg.etf.pp1;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
 
 import org.apache.log4j.Logger;
 
@@ -25,7 +27,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	ArrayList<VarInfo> curVars = new ArrayList<VarInfo>();
 	ArrayList<ConstInfo> curConsts = new ArrayList<ConstInfo>();
 	ArrayList<String> namespaces = new ArrayList<String>();
-	ArrayList<Struct> actParsTypes = new ArrayList<Struct>();
+	public Stack<LinkedList<Struct>> actParsTypes = new Stack<LinkedList<Struct>>();
 
 	Logger log = Logger.getLogger(getClass());
 
@@ -419,51 +421,57 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(FactorDesignatorFuncPars factorDesignatorFuncPars) {
-		Obj obj = factorDesignatorFuncPars.getDesignator().obj;
-		String name = factorDesignatorFuncPars.getDesignator().obj.getName();
+		Obj obj = factorDesignatorFuncPars.getFuncName().getDesignator().obj;
+		String name = factorDesignatorFuncPars.getFuncName().getDesignator().obj.getName();
 		if (obj.getKind() != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFuncPars);
 			factorDesignatorFuncPars.struct = SymTab.noType;
-			actParsTypes.clear();
+			actParsTypes.pop();
 			return;
 		}
-		if (actParsTypes.size() != obj.getLevel()) {
-			report_error("Error. Invalid function argument count", factorDesignatorFuncPars);
+		if (actParsTypes.peek().size() != obj.getLevel()) {
+			report_error("Error. Function " + name + " takes " + obj.getLevel() + " arguments, but " + actParsTypes.peek().size()
+			+ " were provided", factorDesignatorFuncPars);
 			factorDesignatorFuncPars.struct = SymTab.noType;
-			actParsTypes.clear();
+			actParsTypes.pop();
 			return;
 		}
 
 		ArrayList<Obj> formPars = new ArrayList<Obj>(obj.getLocalSymbols());
-		for (int i = 0; i < actParsTypes.size(); ++i) {
-			Struct actType = actParsTypes.get(i);
+		for (int i = 0; i < actParsTypes.peek().size(); ++i) {
+			Struct actType = actParsTypes.peek().get(i);
 			Struct formType = formPars.get(i).getType();
-			if (actType != formType && (!(name == "len" && actParsTypes.get(i) == SymTab.arrayIntType
-					|| actParsTypes.get(i) == SymTab.arrayCharType || actParsTypes.get(i) == SymTab.arrayBoolType))) {
+			if (actType != formType && (!(name == "len" && actParsTypes.peek().get(i) == SymTab.arrayIntType
+					|| actParsTypes.peek().get(i) == SymTab.arrayCharType || actParsTypes.peek().get(i) == SymTab.arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", factorDesignatorFuncPars);
 				factorDesignatorFuncPars.struct = SymTab.noType;
-				actParsTypes.clear();
+				actParsTypes.pop();
 				return;
 			}
 		}
-		actParsTypes.clear();
+		actParsTypes.pop();
 
-		Struct designatorType = factorDesignatorFuncPars.getDesignator().obj.getType();
+		Struct designatorType = factorDesignatorFuncPars.getFuncName().getDesignator().obj.getType();
 		factorDesignatorFuncPars.struct = designatorType;
 	}
 
 	public void visit(FactorDesignatorFunc factorDesignatorFunc) {
-		int kind = factorDesignatorFunc.getDesignator().obj.getKind();
-		String name = factorDesignatorFunc.getDesignator().obj.getName();
+		int kind = factorDesignatorFunc.getFuncName().getDesignator().obj.getKind();
+		String name = factorDesignatorFunc.getFuncName().getDesignator().obj.getName();
 		if (kind != Obj.Meth) {
 			report_error("Error. " + name + "is not a function", factorDesignatorFunc);
 			factorDesignatorFunc.struct = SymTab.noType;
 			return;
 		}
-		Struct designatorType = factorDesignatorFunc.getDesignator().obj.getType();
+		Struct designatorType = factorDesignatorFunc.getFuncName().getDesignator().obj.getType();
 		factorDesignatorFunc.struct = designatorType;
 	}
 
+	public void visit(FuncName funcName) {
+		report_info("Called function " + funcName.getDesignator().obj.getName(), funcName);
+		actParsTypes.add(new LinkedList<Struct>());
+	}
+	
 	public void visit(FactorDesignator factorDesignator) {
 		Struct designatorType = factorDesignator.getDesignator().obj.getType();
 		factorDesignator.struct = designatorType;
@@ -566,58 +574,58 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	public void visit(ActParsOneExpr actParsOneExpr) {
 		Struct type = actParsOneExpr.getExpr().struct;
-		actParsTypes.add(type);
+		actParsTypes.peek().add(type);
 	}
 
 	public void visit(ActParsMulExpr actParsMulExpr) {
 		Struct type = actParsMulExpr.getExpr().struct;
-		actParsTypes.add(type);
+		actParsTypes.peek().add(type);
 	}
 
 	public void visit(FuncCallNoArg funcCallNoArg) {
-		String funcName = funcCallNoArg.getDesignator().obj.getName();
-		Obj funcObj = funcCallNoArg.getDesignator().obj;
+		String funcName = funcCallNoArg.getFuncName().getDesignator().obj.getName();
+		Obj funcObj = funcCallNoArg.getFuncName().getDesignator().obj;
 
 		if (funcObj.getKind() != Obj.Meth) {
-			actParsTypes.clear();
+			actParsTypes.pop();
 			return;
 		}
 
-		if (actParsTypes.size() != funcObj.getLevel()) {
+		if (actParsTypes.peek().size() != funcObj.getLevel()) {
 			report_error("Error. Invalid function argument count", funcCallNoArg);
-			actParsTypes.clear();
+			actParsTypes.pop();
 			return;
 		}
-		actParsTypes.clear();
+		actParsTypes.pop();
 	}
 
 	public void visit(FuncCallArg funcCallArg) {
-		String funcName = funcCallArg.getDesignator().obj.getName();
-		Obj funcObj = funcCallArg.getDesignator().obj;
+		String funcName = funcCallArg.getFuncName().getDesignator().obj.getName();
+		Obj funcObj = funcCallArg.getFuncName().getDesignator().obj;
 
 		if (funcObj.getKind() != Obj.Meth) {
-			actParsTypes.clear();
+			actParsTypes.pop();
 			return;
 		}
 
-		if (actParsTypes.size() != funcObj.getLevel()) {
+		if (actParsTypes.peek().size() != funcObj.getLevel()) {
 			report_error("Error. Invalid function argument count", funcCallArg);
-			actParsTypes.clear();
+			actParsTypes.pop();
 			return;
 		}
 
 		ArrayList<Obj> formPars = new ArrayList<Obj>(funcObj.getLocalSymbols());
 
-		for (int i = 0; i < actParsTypes.size(); ++i) {
-			Struct actType = actParsTypes.get(i);
+		for (int i = 0; i < actParsTypes.peek().size(); ++i) {
+			Struct actType = actParsTypes.peek().get(i);
 			Struct formType = formPars.get(i).getType();
-			if (actType != formType && (!(funcName == "len" && actParsTypes.get(i) == SymTab.arrayIntType
-					|| actParsTypes.get(i) == SymTab.arrayCharType || actParsTypes.get(i) == SymTab.arrayBoolType))) {
+			if (actType != formType && (!(funcName == "len" && actParsTypes.peek().get(i) == SymTab.arrayIntType
+					|| actParsTypes.peek().get(i) == SymTab.arrayCharType || actParsTypes.peek().get(i) == SymTab.arrayBoolType))) {
 				report_error("Error. Type mismatch in function call", funcCallArg);
 			}
 		}
 
-		actParsTypes.clear();
+		actParsTypes.pop();
 	}
 
 	public void visit(Assignment assignment) {
