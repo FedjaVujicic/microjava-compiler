@@ -30,7 +30,7 @@ int a, b, c[], niz[];
 		arrR[8] = 8;
 		arrR[9] = 9;
 	
-		[v[0], v[1], v[2], v[3], v[4], v[5], , , , v[9], *arrL] = arrR;
+		[v[0], v[1], v[2], v[3], v[arrR[6]], v[5], v[arrR[4]], , , v[9], *arrL] = arrR;
 		print(v[0]);
 		print(v[1]);
 		print(v[2]);

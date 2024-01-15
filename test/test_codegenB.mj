@@ -1,0 +1,60 @@
+program TestB
+
+namespace constants {
+	int num[];
+	{
+		bool init_constants() {
+			num = new int[10];
+			constants::num[0] = 0;
+			num[1] = 1;
+			constants::num[2] = 2;
+			num[3] = 3;
+			constants::num[4] = 4;
+			num[5] = 5;
+			constants::num[6] = 6;
+			num[7] = 7;
+			constants::num[8] = 8;
+			num[9] = 9;
+			
+			return true;
+		}
+	}
+}
+
+{
+	int double(int val) {
+		return val + val;
+	}
+	
+	int square(int val) {
+		return val * val;
+	}
+	
+	void checkConditions(int val) {
+		// Prints 2x W if val is 50
+		if (val > 39 && val == 40 || val < 66 && val != 50 || val > 49 && val < 51 && val != 60 && val < 100 || val == 300)
+			if (val != 50)
+				print('L');
+			else
+				print('W');
+		
+		if (val > 39 && val == 40 || val < 66 && val != 50 || val > 49 && val < 50 && val != 60 && val < 100 || val == 300)
+			print('L');
+		else
+			print('W');
+	}
+	
+	void main() int res; int v[]; int arr[]; {
+		print(constants::init_constants()); //1
+		res = double(double(double(constants::num[double(1)])) + square(constants::num[4])) + 2;
+		print(res);
+		checkConditions(res);
+		v = new int[5];
+		[v[constants::num[4]], v[3], v[double(constants::num[1])], v[1], v[0], *arr] = constants::num;
+		print(v[0]);
+		print(v[1]);
+		print(v[2]);
+		print(v[3]);
+		print(v[4]);
+	}
+}

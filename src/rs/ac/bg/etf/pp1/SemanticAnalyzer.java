@@ -113,12 +113,12 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 
 	// Namespace
 	public void visit(NamespaceDecl namespace) {
-		namespaces.add(curNamespace);
 		curNamespace = "";
 	}
 
 	public void visit(NamespaceName namespaceName) {
 		curNamespace = namespaceName.getName();
+		namespaces.add(curNamespace);
 	}
 
 	// VarDecl
@@ -325,9 +325,19 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 		String name = designatorIdent.getName();
 		Obj obj = SymTab.find(name);
 		if (obj == SymTab.noObj) {
-			report_error("Error. Undefined symbol " + name, designatorIdent);
-			designatorIdent.obj = obj;
-			return;
+			if (curNamespace != "") {
+				String nsName = curNamespace + "::" + name;
+				obj = SymTab.find(nsName);
+				if (obj == SymTab.noObj) {
+					report_error("Error. Undefined symbol " + name, designatorIdent);
+					designatorIdent.obj = obj;
+					return;					
+				}
+			} else {
+				report_error("Error. Undefined symbol " + name, designatorIdent);
+				designatorIdent.obj = obj;
+				return;				
+			}
 		}
 		if (obj.getKind() != Obj.Con && obj.getKind() != Obj.Var && obj.getKind() != Obj.Meth) {
 			report_error("Error. Invalid identifier " + name, designatorIdent);
