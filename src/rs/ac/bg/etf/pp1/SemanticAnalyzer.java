@@ -768,7 +768,7 @@ public class SemanticAnalyzer extends VisitorAdaptor {
 	}
 
 	public void visit(MultipleAssignment multipleAssignment) {
-		Obj rightArrDesignatorObj = multipleAssignment.getDesignator1().obj;
+		Obj rightArrDesignatorObj = multipleAssignment.getDesignator().obj;
 		Obj leftArrDesignatorObj = multipleAssignment.getDesignator().obj;
 		if (rightArrDesignatorObj.getType() != SymTab.arrayIntType
 				&& rightArrDesignatorObj.getType() != SymTab.arrayCharType

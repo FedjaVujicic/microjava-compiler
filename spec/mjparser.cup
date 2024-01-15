@@ -64,6 +64,7 @@ terminal Boolean BOOL_CONST;
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName, IfBody, IfCnd, IfWord, Or_;
 nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
+nonterminal MulAssignArray;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType, AssignExpr, Condition, CondTerm, CondFact, Expr, Term, Factor;
@@ -317,7 +318,7 @@ DesignatorStatementList ::= (DesignatorStatementOne) DesignatorStatement
 
 DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
 						|
-						(MultipleAssignment) LSQUARE DesignatorList MUL Designator RSQUARE Assignop Designator
+						(MultipleAssignment) LSQUARE DesignatorList MUL MulAssignArray RSQUARE Assignop Designator
 						|
 						(FuncCallNoArg) FuncName LPAREN RPAREN
 						| 
@@ -327,6 +328,8 @@ DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
 						| 
 						(Decrement) Designator DEC
 						;
+						
+MulAssignArray ::= (MulAssignArray) Designator;
 
 DesignatorList ::= (DesignatorListNone)
 				| 

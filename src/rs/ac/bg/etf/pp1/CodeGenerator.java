@@ -7,6 +7,7 @@ import rs.ac.bg.etf.pp1.CounterVisitor.FormParCounter;
 import rs.ac.bg.etf.pp1.CounterVisitor.VarCounter;
 import rs.ac.bg.etf.pp1.ast.*;
 import rs.etf.pp1.mj.runtime.*;
+import rs.etf.pp1.symboltable.Tab;
 import rs.etf.pp1.symboltable.concepts.*;
 
 public class CodeGenerator extends VisitorAdaptor {
@@ -30,6 +31,10 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	// List of addresses that need a fixup to jump to the next OR condition
 	LinkedList<Integer> orAddrList = new LinkedList<Integer>();
+
+	// List of variables that need to be changed by multiple assignment
+	LinkedList<Obj> mulAssignVars = new LinkedList<Obj>();
+	Obj mulAssignArr;
 
 	enum MulOper {
 		MUL, DIV, REM
@@ -232,7 +237,6 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(DesignatorIndex designatorIndex) {
 		// -> expr : ..., addr, index
-		String varName = designatorIndex.obj.getName();
 		Obj arrObj = designatorIndex.getDesignator().obj;
 		Code.load(arrObj);
 		Code.put(Code.dup_x1);
@@ -372,5 +376,60 @@ public class CodeGenerator extends VisitorAdaptor {
 			Code.fixup(addr + 1);
 		}
 		elseAddrStack.pop();
+	}
+
+	public void visit(MultipleAssignment multipleAssignment) {
+		Obj arrRObj = multipleAssignment.getDesignator().obj;
+
+		// Generates code for assignment to variables
+		for (int i = 0; i < mulAssignVars.size(); ++i) {
+			Obj curVar = mulAssignVars.get(i);
+			if (curVar == SymTab.noObj) {
+				continue;
+			}
+			if (curVar.getKind() == Obj.Elem) {
+				continue;
+			}
+			// Loads the array addr onto the expr stack
+			Code.load(arrRObj);
+			// Loads the array index onto the expr stack
+			Code.loadConst(i);
+			Code.put(Code.aload);
+			Code.store(curVar);
+			System.out.println(curVar.getAdr());
+		}
+
+		// Generates code for assignment to array elements
+		// When visiting designator[], the expr stack is already filled with addr, ind,
+		// addr, ind... The mulAssign vars then need to be traversed backwards so that
+		// they can pop their respective addr and ind
+		for (int i = mulAssignVars.size() - 1; i >= 0; --i) {
+			Obj curVar = mulAssignVars.get(i);
+			if (curVar == SymTab.noObj) {
+				continue;
+			}
+			if (curVar.getKind() != Obj.Elem) {
+				continue;
+			}
+			// Loads the arrayR addr onto the expr stack
+			Code.load(arrRObj);
+			// Loads the arrayR index onto the expr stack
+			Code.loadConst(i);
+			Code.put(Code.aload);
+			Code.store(curVar);
+			System.out.println(curVar.getAdr());
+		}
+	}
+
+	public void visit(DesignatorListNoElem designatorListNoElem) {
+		mulAssignVars.add(SymTab.noObj);
+	}
+
+	public void visit(DesignatorListElem designatorListElem) {
+		Obj designatorObj = designatorListElem.getDesignator().obj;
+		mulAssignVars.add(designatorObj);
+	}
+
+	public void visit(MulAssignArray mulAssignArray) {
 	}
 }
