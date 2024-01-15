@@ -1,48 +1,13 @@
 program MultipleAssignment
 
-int arrR[];
-
-int a, b, c[], niz[];
-
 {
-	void main() int v[]; int arrL[]; int v0; int v1; int v2; {
-		v = new int[10];
-		v[0] = 0;
-		v[1] = 0;
-		v[2] = 0; 
-		v[3] = 0;
-		v[4] = 0;
-		v[5] = 0;
-		v[6] = 0;
-		v[7] = 0;
-		v[8] = 0;
-		v[9] = 0;
-		
-		arrR = new int[10];
-		arrR[0] = 0;
-		arrR[1] = 1;
-		arrR[2] = 2;
-		arrR[3] = 3;
-		arrR[4] = 4;
-		arrR[5] = 5;
-		arrR[6] = 6;
-		arrR[7] = 7;
-		arrR[8] = 8;
-		arrR[9] = 9;
-	
-		[v[0], v[1], v[2], v[3], v[arrR[6]], v[5], v[arrR[4]], , , v[9], *arrL] = arrR;
-		print(v[0]);
-		print(v[1]);
-		print(v[2]);
-		print(v[3]);
-		print(v[4]);
-		print(v[5]);
-		print(v[6]);
-		print(v[7]);
-		print(v[8]);
-		print(v[9]);
+	void main() int a; int b; int c[]; int niz[]; {
 		
 		niz = new int[3];
-		[a,,b,*c] = niz; // runtime error!
+		niz[0] = 69;
+		niz[1] = 34;
+		[a,b,,*c] = niz; // runtime error!
+		print(a);
+		print(b);
 	}
 }

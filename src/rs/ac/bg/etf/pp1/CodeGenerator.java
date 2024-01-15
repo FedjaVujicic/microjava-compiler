@@ -380,6 +380,15 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(MultipleAssignment multipleAssignment) {
 		Obj arrRObj = multipleAssignment.getDesignator().obj;
+		// Generates a runtime error if there are more total vars (including arrL)
+		// on the left side than the size of the arrR
+		Code.loadConst(mulAssignVars.size());
+		Code.load(arrRObj);
+		Code.put(Code.arraylength);		
+		Code.put(Code.jcc + Code.lt);
+		Code.put2(5);
+		Code.put(Code.trap);
+		Code.put(1);
 
 		// Generates code for assignment to variables
 		for (int i = 0; i < mulAssignVars.size(); ++i) {
