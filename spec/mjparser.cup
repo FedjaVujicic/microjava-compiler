@@ -282,14 +282,6 @@ Designator ::= (DesignatorIdent) IDENT:name
 			(DesignatorIndex) Designator LSQUARE Expr RSQUARE
 			;
 
-DesignatorList ::= (DesignatorListNone)
-				| 
-				(DesignatorListNoElem) DesignatorList COMMA
-				| 
-				(DesignatorListElem) DesignatorList Designator COMMA
-				;
-				
-
 ActPars ::= (ActParsOneExpr) Expr
 			| 
 			(ActParsMulExpr) ActPars COMMA Expr
@@ -335,6 +327,13 @@ DesignatorStatement ::= (Assignment) Designator Assignop AssignExpr
 						| 
 						(Decrement) Designator DEC
 						;
+
+DesignatorList ::= (DesignatorListNone)
+				| 
+				(DesignatorListNoElem) DesignatorList COMMA
+				| 
+				(DesignatorListElem) DesignatorList Designator COMMA
+				;
 
 Assignop ::= (Assignop) ASSIGN;
 
