@@ -396,7 +396,6 @@ public class CodeGenerator extends VisitorAdaptor {
 			Code.loadConst(i);
 			Code.put(Code.aload);
 			Code.store(curVar);
-			System.out.println(curVar.getAdr());
 		}
 
 		// Generates code for assignment to array elements
@@ -417,8 +416,9 @@ public class CodeGenerator extends VisitorAdaptor {
 			Code.loadConst(i);
 			Code.put(Code.aload);
 			Code.store(curVar);
-			System.out.println(curVar.getAdr());
 		}
+
+		mulAssignVars.clear();
 	}
 
 	public void visit(DesignatorListNoElem designatorListNoElem) {

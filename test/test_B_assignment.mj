@@ -2,8 +2,9 @@ program MultipleAssignment
 
 int arrR[];
 
-{
+int a, b, c[], niz[];
 
+{
 	void main() int v[]; int arrL[]; int v0; int v1; int v2; {
 		v = new int[10];
 		v[0] = 0;
@@ -40,5 +41,8 @@ int arrR[];
 		print(v[7]);
 		print(v[8]);
 		print(v[9]);
+		
+		niz = new int[3];
+		[a,,b,*c] = niz; // runtime error!
 	}
 }
