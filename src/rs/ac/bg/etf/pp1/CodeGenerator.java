@@ -380,11 +380,13 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(MultipleAssignment multipleAssignment) {
 		Obj arrRObj = multipleAssignment.getDesignator().obj;
+		Obj arrLObj = multipleAssignment.getMulAssignArray().getDesignator().obj;
+
 		// Generates a runtime error if there are more total vars (including arrL)
 		// on the left side than the size of the arrR
 		Code.loadConst(mulAssignVars.size());
 		Code.load(arrRObj);
-		Code.put(Code.arraylength);		
+		Code.put(Code.arraylength);
 		Code.put(Code.jcc + Code.lt);
 		Code.put2(5);
 		Code.put(Code.trap);
@@ -427,7 +429,76 @@ public class CodeGenerator extends VisitorAdaptor {
 			Code.store(curVar);
 		}
 
+		generateArrayCopyCode(arrLObj, arrRObj, mulAssignVars.size());
+
 		mulAssignVars.clear();
+	}
+
+	public void generateArrayCopyCode(Obj arrLObj, Obj arrRObj, int indexDiff) {
+		int startAddr = -1;
+		int endAddrL = -1;
+		int endAddrR = -1;
+
+		int indexBase = 0;
+		Code.loadConst(indexBase);
+
+		// Check if left array is full
+		// expr: i
+		Code.put(Code.dup);
+		startAddr = Code.pc;
+		Code.load(arrLObj);
+		Code.put(Code.arraylength);
+		endAddrL = Code.pc;
+		Code.putFalseJump(Code.lt, 0);
+
+		// Check if right array is full
+		// expr: i
+		Code.put(Code.dup);
+		Code.loadConst(indexDiff);
+		Code.put(Code.add);
+		Code.load(arrRObj);
+		Code.put(Code.arraylength);
+		endAddrR = Code.pc;
+		Code.putFalseJump(Code.lt, 0);
+
+		// Load from right array to expr stack
+		// expr: i
+		Code.put(Code.dup);
+		// i i
+		Code.put(Code.dup);
+		// i i i
+		Code.loadConst(indexDiff);
+		// i i i d
+		Code.put(Code.add);
+		// i i ir
+		Code.load(arrRObj);
+		// i i ir ar
+		Code.put(Code.dup_x1);
+		// i i ar ir ar
+		Code.put(Code.pop);
+		// i i ar ir
+		Code.put(Code.aload);
+
+		// Store the value from expr stack to the left array
+		// expr: i, i, val
+		Code.load(arrLObj);
+		// i i val al
+		Code.put(Code.dup_x2);
+		// i al i val al
+		Code.put(Code.pop);
+		// i al i val
+		Code.put(Code.astore);
+
+		// Increment base index
+		// expr: i
+		Code.loadConst(1);
+		Code.put(Code.add);
+
+		// expr: i + 1
+		Code.put(Code.jmp);
+		Code.put2(startAddr - Code.pc);
+		Code.fixup(endAddrL + 1);
+		Code.fixup(endAddrR + 1);
 	}
 
 	public void visit(DesignatorListNoElem designatorListNoElem) {
