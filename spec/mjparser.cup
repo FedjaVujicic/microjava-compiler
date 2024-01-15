@@ -62,7 +62,7 @@ terminal Character CHAR_CONST;
 terminal Boolean BOOL_CONST;
 
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
-nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName, IfBody, IfCnd, IfWord;
+nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName, IfBody, IfCnd, IfWord, Or_;
 nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
@@ -211,8 +211,10 @@ IfCnd ::= (IfCnd) Condition;
 
 Condition ::= (ConditionTerm) CondTerm
 			| 
-			(ConditionOrTerm) Condition OR CondTerm
+			(ConditionOrTerm) Condition Or_ CondTerm
 			;
+			
+Or_ ::= (Or_) OR;
 			
 CondTerm ::= (CondTermFact) CondFact
 			| 

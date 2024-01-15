@@ -1,6 +1,6 @@
 package rs.ac.bg.etf.pp1;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import rs.ac.bg.etf.pp1.CounterVisitor.FormParCounter;
@@ -17,8 +17,12 @@ public class CodeGenerator extends VisitorAdaptor {
 	Stack<AddOper> nextAddOp = new Stack<AddOper>();
 	Stack<RelOper> relOpStack = new Stack<RelOper>();
 
+	LinkedList<RelOper> relOpBuffer = new LinkedList<RelOper>();
+
 	Stack<Integer> stmtEndAddrStack = new Stack<Integer>();
-	Stack<ArrayList<Integer>> elseAddrStack = new Stack<ArrayList<Integer>>();
+	Stack<LinkedList<Integer>> elseAddrStack = new Stack<LinkedList<Integer>>();
+	Stack<LinkedList<Integer>> thenAddrStack = new Stack<LinkedList<Integer>>();
+	LinkedList<Integer> orAddrList = new LinkedList<Integer>();
 
 	enum MulOper {
 		MUL, DIV, REM
@@ -263,50 +267,87 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(OpEqual opEqual) {
 		relOpStack.push(RelOper.EQ);
+		relOpBuffer.add(RelOper.EQ);
 	}
 
 	public void visit(OpNotEqual opNotEqual) {
 		relOpStack.push(RelOper.NE);
+		relOpBuffer.add(RelOper.NE);
 	}
 
 	public void visit(OpLesser opLesser) {
 		relOpStack.push(RelOper.LT);
+		relOpBuffer.add(RelOper.LT);
 	}
 
 	public void visit(OpLesserEqual opLesserEqual) {
 		relOpStack.push(RelOper.LE);
+		relOpBuffer.add(RelOper.LE);
 	}
 
 	public void visit(OpGreater opGreater) {
 		relOpStack.push(RelOper.GT);
+		relOpBuffer.add(RelOper.GT);
 	}
 
 	public void visit(OpGreaterEqual opGreaterEqual) {
 		relOpStack.push(RelOper.GE);
+		relOpBuffer.add(RelOper.GE);
 	}
 
 	public void visit(StmtIfElse stmtIfElse) {
-		Code.fixup(stmtEndAddrStack.pop());
+		Code.fixup(stmtEndAddrStack.pop() + 1);
 	}
 
 	public void visit(IfWord ifWord) {
-		elseAddrStack.push(new ArrayList<Integer>());
+		elseAddrStack.push(new LinkedList<Integer>());
+		thenAddrStack.push(new LinkedList<Integer>());
 	}
 
 	public void visit(CondFactRelExpr condFactRelExpr) {
 		RelOper relOp = relOpStack.pop();
-		elseAddrStack.peek().add(Code.pc + 1);
+		elseAddrStack.peek().add(Code.pc);
 		Code.putFalseJump(getRelopCode(relOp), 0);
+	}
+
+	public void visit(IfCnd ifCnd) {
+		relOpBuffer.clear();
+		for (int addr : thenAddrStack.peek()) {
+			Code.fixup(addr + 1);
+		}
+	}
+
+	public void visit(Or_ or_) {
+		while (elseAddrStack.peek().size() > 0) {
+			Code.pc = elseAddrStack.peek().getFirst();
+
+			RelOper op = relOpBuffer.removeFirst();
+			int addr = elseAddrStack.peek().removeFirst();
+
+			if (elseAddrStack.peek().size() > 0) {
+				orAddrList.add(Code.pc);
+				Code.putFalseJump(getRelopCode(op), 0);
+			} else {
+				thenAddrStack.peek().add(Code.pc);
+				Code.putFalseJump(Code.inverse[getRelopCode(op)], 0);
+			}
+		}
+
+		for (int addr : orAddrList) {
+			Code.fixup(addr + 1);
+		}
+		orAddrList.clear();
 	}
 
 	public void visit(IfBody ifBody) {
 		if (ifBody.getParent().getClass() == StmtIfElse.class) {
-			stmtEndAddrStack.push(Code.pc + 1);
+			stmtEndAddrStack.push(Code.pc);
 			Code.putJump(0);
 		}
 		for (int addr : elseAddrStack.peek()) {
-			Code.fixup(addr);
+			Code.fixup(addr + 1);
 		}
 		elseAddrStack.pop();
+		thenAddrStack.pop();
 	}
 }
