@@ -44,11 +44,63 @@ namespace constants {
 			print('W');
 	}
 	
-	void main() int res; int v[]; int arr[]; {
+	void checkLoopAndConditions() int i; int j; int k; int size; char word[]; {
+		// i k i k i k i k i k W W W W W
+		size = 5;
+		word = new char[size];
+		for (i = 0, j = 0; ; i++, j++) {
+			if (j * i == 25) break;
+			else print('i');
+			word[i] = 'W';
+			for (k = 0; k < 3; k++) {
+				if (k != 0 && k != 1) { print('k'); }
+				else {  }
+			}
+		}
+		for (i = 0; i < size; i++) {
+			print(word[i]);
+		}
+	}
+	
+	void checkNestedIfs() int i; int val; {
+		val = 50;
+		print(eol);
+		if (2 < 5)
+		{
+			if (3 == 3 && 2 == 2 && 2*5*874 > double(15)*2 && 3 == 4)
+			{
+				print('n');
+			}
+			else
+			{
+				if (val > 39 && val == 40 || val < 66 && val != 50 || val > 49 && val < 51 && val != 60 && val < 100 || val == 300)
+				{
+					if (2 == 1) 
+					{
+						print('n');
+					}
+					else
+					{
+						for (i = 0; i < 2; i++)
+						{
+							print('G');
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			print('n');
+		}
+	}
+	
+	void main() int res; int v[]; int arr[]; int i; {
 		print(constants::init_constants()); //1
 		res = double(double(double(constants::num[double(1)])) + square(constants::num[4])) + 2;
 		print(res);
 		checkConditions(res);
+		arr = new int[5];
 		v = new int[5];
 		[v[constants::num[4]], v[3], v[double(constants::num[1])], v[1], v[0], *arr] = constants::num;
 		print(v[0]);
@@ -56,5 +108,12 @@ namespace constants {
 		print(v[2]);
 		print(v[3]);
 		print(v[4]);
+		
+		for (i = 4; i >= 0; i--) {
+			print(arr[i]);
+		}
+		
+		checkLoopAndConditions();
+		checkNestedIfs();
 	}
 }
