@@ -1,0 +1,11 @@
+program ForLoop
+
+{
+	void main() int i; {
+		for (i = 10; ; i--) {
+			if (i > 7) continue;
+			if (i < 3) break;
+			print(i);
+		}
+	}
+}

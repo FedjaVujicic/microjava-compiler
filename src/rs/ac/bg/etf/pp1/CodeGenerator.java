@@ -36,6 +36,18 @@ public class CodeGenerator extends VisitorAdaptor {
 	LinkedList<Obj> mulAssignVars = new LinkedList<Obj>();
 	Obj mulAssignArr;
 
+	// List of addresses that need a fixup in the for loop
+	Stack<Integer> forCndAddr = new Stack<Integer>();
+	Stack<Integer> forStmtAddr = new Stack<Integer>();
+	Stack<Integer> forBodyWait = new Stack<Integer>();
+	Stack<LinkedList<Integer>> forEndWait = new Stack<LinkedList<Integer>>();
+
+	Stack<ControlBlock> curControlBlocks = new Stack<ControlBlock>();
+
+	enum ControlBlock {
+		IF, FOR
+	};
+
 	enum MulOper {
 		MUL, DIV, REM
 	};
@@ -303,12 +315,18 @@ public class CodeGenerator extends VisitorAdaptor {
 		relOpBuffer.add(RelOper.GE);
 	}
 
+	public void visit(StmtIf stmtIf) {
+		curControlBlocks.pop();
+	}
+
 	public void visit(StmtIfElse stmtIfElse) {
 		// End of if else found. Fixup jump over else address
 		Code.fixup(stmtEndAddrStack.pop() + 1);
+		curControlBlocks.pop();
 	}
 
 	public void visit(IfWord ifWord) {
+		curControlBlocks.push(ControlBlock.IF);
 		elseAddrStack.push(new LinkedList<Integer>());
 		thenAddrStack.push(new LinkedList<Integer>());
 	}
@@ -320,6 +338,13 @@ public class CodeGenerator extends VisitorAdaptor {
 		// if (!cndF3) elseAddr
 		// ...
 		// for current CondTerm
+		if (curControlBlocks.peek() == ControlBlock.FOR) {
+			// Put jump to the end of for body if cnd is not met
+			RelOper relOp = relOpStack.pop();
+			forEndWait.peek().add(Code.pc);
+			Code.putFalseJump(getRelopCode(relOp), 0);
+			return;
+		}
 		RelOper relOp = relOpStack.pop();
 		elseAddrStack.peek().add(Code.pc);
 		Code.putFalseJump(getRelopCode(relOp), 0);
@@ -376,6 +401,60 @@ public class CodeGenerator extends VisitorAdaptor {
 			Code.fixup(addr + 1);
 		}
 		elseAddrStack.pop();
+	}
+
+	public void visit(StmtFor stmtFor) {
+		curControlBlocks.pop();
+		forCndAddr.pop();
+		forStmtAddr.pop();
+		forBodyWait.pop();
+		forEndWait.pop();
+	}
+
+	public void visit(ForWord forWord) {
+		curControlBlocks.push(ControlBlock.FOR);
+		forEndWait.push(new LinkedList<Integer>());
+	}
+
+	public void visit(ForStmt1 forStmt1) {
+		// Save cndAddr
+		forCndAddr.push(Code.pc);
+	}
+
+	public void visit(ForCond forCond) {
+		// Jump over stmt2 to for body
+		forBodyWait.push(Code.pc);
+		Code.putJump(0);
+
+		// Save stmt2addr
+		forStmtAddr.push(Code.pc);
+	}
+
+	public void visit(ForStmt2 forStmt2) {
+		// Jump to condition check
+		Code.putJump(forCndAddr.peek());
+
+		// Fixup addr waiting for body
+		Code.fixup(forBodyWait.peek() + 1);
+	}
+
+	public void visit(ForBody forBody) {
+		// Jump to stmt2
+		Code.putJump(forStmtAddr.peek());
+
+		// Fixup addr waiting for end
+		for (int addr : forEndWait.peek()) {
+			Code.fixup(addr + 1);
+		}
+	}
+
+	public void visit(StmtBreak stmtBreak) {
+		forEndWait.peek().add(Code.pc);
+		Code.putJump(Code.pc);
+	}
+
+	public void visit(StmtContinue stmtContinue) {
+		Code.putJump(forStmtAddr.peek());
 	}
 
 	public void visit(MultipleAssignment multipleAssignment) {

@@ -64,7 +64,7 @@ terminal Boolean BOOL_CONST;
 nonterminal Program, NamespaceList, NamespaceDecl, NamespaceName, DeclList, IdentDecl, ConstDecl, ConstVars, ConstVar, ConstValue, VarDecl, Vars, Var;
 nonterminal MethodDeclList, MethodDecl, FormParsOpt, FormParsList, FormPar, VarDeclList, ForEntry, CondFactOpt, FuncName, IfBody, IfCnd, IfWord, Or_;
 nonterminal StatementList, Statement, Relop, Addop, Mulop, ActPars, DesignatorStatementListOpt, DesignatorStatementList, DesignatorStatement, DesignatorList, Assignop;
-nonterminal MulAssignArray;
+nonterminal MulAssignArray, ForWord, ForBody, ForStmt1, ForCond, ForStmt2;
 
 nonterminal rs.etf.pp1.symboltable.concepts.Obj ProgName, MethodTypeName, Designator;
 nonterminal rs.etf.pp1.symboltable.concepts.Struct Type, RetType, AssignExpr, Condition, CondTerm, CondFact, Expr, Term, Factor;
@@ -197,12 +197,22 @@ Statement ::= (StmtDesignator) DesignatorStatement SEMICOLON
 			| 
 			(StmtPrintExprNum) PRINT LPAREN Expr COMMA NUM_CONST:width RPAREN SEMICOLON
 			|
-			(StmtFor) FOR LPAREN DesignatorStatementListOpt SEMICOLON CondFactOpt SEMICOLON DesignatorStatementListOpt ForEntry Statement
+			(StmtFor) ForWord LPAREN ForStmt1 SEMICOLON ForCond SEMICOLON ForStmt2 ForEntry ForBody
 			|
 			(StmtList) LBRACE StatementList RBRACE
 			;
-			
+
+ForWord ::= (ForWord) FOR;
+	
 ForEntry ::= (ForEntry) RPAREN;	
+
+ForBody ::= (ForBody) Statement;
+
+ForStmt1 ::= (ForStmt1) DesignatorStatementListOpt;
+
+ForCond ::= (ForCond) CondFactOpt;
+
+ForStmt2 ::= (ForStmt2) DesignatorStatementListOpt;
 
 IfWord ::= (IfWord) IF;
 
