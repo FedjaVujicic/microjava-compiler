@@ -22,15 +22,15 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	// Stack of end-of-if addresses (One for every nested if) that need a fixup
 	// to jump over the else body
-	Stack<Integer> stmtEndAddrStack = new Stack<Integer>();
+	Stack<Integer> stmtEndWait = new Stack<Integer>();
 
 	// Stack of lists (One for every nested if) that contain every address that
 	// needs a fixup to jump to either then or else
-	Stack<LinkedList<Integer>> elseAddrStack = new Stack<LinkedList<Integer>>();
-	Stack<LinkedList<Integer>> thenAddrStack = new Stack<LinkedList<Integer>>();
+	Stack<LinkedList<Integer>> elseWait = new Stack<LinkedList<Integer>>();
+	Stack<LinkedList<Integer>> thenWait = new Stack<LinkedList<Integer>>();
 
 	// List of addresses that need a fixup to jump to the next OR condition
-	LinkedList<Integer> orAddrList = new LinkedList<Integer>();
+	LinkedList<Integer> orWait = new LinkedList<Integer>();
 
 	// List of variables that need to be changed by multiple assignment
 	LinkedList<Obj> mulAssignVars = new LinkedList<Obj>();
@@ -321,14 +321,14 @@ public class CodeGenerator extends VisitorAdaptor {
 
 	public void visit(StmtIfElse stmtIfElse) {
 		// End of if else found. Fixup jump over else address
-		Code.fixup(stmtEndAddrStack.pop() + 1);
+		Code.fixup(stmtEndWait.pop() + 1);
 		curControlBlocks.pop();
 	}
 
 	public void visit(IfWord ifWord) {
 		curControlBlocks.push(ControlBlock.IF);
-		elseAddrStack.push(new LinkedList<Integer>());
-		thenAddrStack.push(new LinkedList<Integer>());
+		elseWait.push(new LinkedList<Integer>());
+		thenWait.push(new LinkedList<Integer>());
 	}
 
 	public void visit(CondFactRelExpr condFactRelExpr) {
@@ -346,17 +346,17 @@ public class CodeGenerator extends VisitorAdaptor {
 			return;
 		}
 		RelOper relOp = relOpStack.pop();
-		elseAddrStack.peek().add(Code.pc);
+		elseWait.peek().add(Code.pc);
 		Code.putFalseJump(getRelopCode(relOp), 0);
 	}
 
 	public void visit(IfCnd ifCnd) {
 		// Start of then found. Fixup addresses waiting for then
 		relOpBuffer.clear();
-		for (int addr : thenAddrStack.peek()) {
+		for (int addr : thenWait.peek()) {
 			Code.fixup(addr + 1);
 		}
-		thenAddrStack.pop();
+		thenWait.pop();
 	}
 
 	public void visit(Or_ or_) {
@@ -370,23 +370,23 @@ public class CodeGenerator extends VisitorAdaptor {
 		// jmp (!cndF2) nextCondTermAddr
 		// jmp (cndF3) thenAddr
 		// whenever a || token is found
-		while (elseAddrStack.peek().size() > 0) {
-			Code.pc = elseAddrStack.peek().removeFirst();
+		while (elseWait.peek().size() > 0) {
+			Code.pc = elseWait.peek().removeFirst();
 			RelOper op = relOpBuffer.removeFirst();
 
-			if (elseAddrStack.peek().size() > 0) {
-				orAddrList.add(Code.pc);
+			if (elseWait.peek().size() > 0) {
+				orWait.add(Code.pc);
 				Code.putFalseJump(getRelopCode(op), 0);
 			} else {
-				thenAddrStack.peek().add(Code.pc);
+				thenWait.peek().add(Code.pc);
 				Code.putFalseJump(Code.inverse[getRelopCode(op)], 0);
 			}
 		}
 
-		for (int addr : orAddrList) {
+		for (int addr : orWait) {
 			Code.fixup(addr + 1);
 		}
-		orAddrList.clear();
+		orWait.clear();
 	}
 
 	public void visit(IfBody ifBody) {
@@ -394,13 +394,13 @@ public class CodeGenerator extends VisitorAdaptor {
 		// In case of if-else create a jump over then body
 		// Fixup addresses waiting for else
 		if (ifBody.getParent().getClass() == StmtIfElse.class) {
-			stmtEndAddrStack.push(Code.pc);
+			stmtEndWait.push(Code.pc);
 			Code.putJump(0);
 		}
-		for (int addr : elseAddrStack.peek()) {
+		for (int addr : elseWait.peek()) {
 			Code.fixup(addr + 1);
 		}
-		elseAddrStack.pop();
+		elseWait.pop();
 	}
 
 	public void visit(StmtFor stmtFor) {
@@ -589,6 +589,4 @@ public class CodeGenerator extends VisitorAdaptor {
 		mulAssignVars.add(designatorObj);
 	}
 
-	public void visit(MulAssignArray mulAssignArray) {
-	}
 }
