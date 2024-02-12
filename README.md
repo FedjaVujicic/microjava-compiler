@@ -17,4 +17,4 @@ Setting up the project:
   git clone --recursive https://github.com/FedjaVujicic/microjava-compiler.git
 ```
 
-Compile build.xml with Ant -> Run Compiler.java -> runObj build.xml
+Run build.xml with Ant -> Run Compiler.java -> runObj build.xml
